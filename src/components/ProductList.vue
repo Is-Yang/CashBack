@@ -54,7 +54,7 @@
                             </div>
                             <van-row type="flex" justify="space-between">
                                 <van-col>
-                                    <span class="price">{{'￥' + item.coupon_amount}}</span>
+                                    <span class="price">{{'￥' + (item.zk_final_price - item.coupon_amount)}}</span>
                                     <span>天猫价：{{'￥' + item.zk_final_price}}</span>
                                 </van-col>
                                 <van-col>月销：{{item.volume}}</van-col>

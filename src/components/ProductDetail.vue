@@ -151,6 +151,7 @@
     #productDetail {
         .product-main {
             overflow: auto;
+            padding-bottom: 50px;
         }
     }
 </style>
