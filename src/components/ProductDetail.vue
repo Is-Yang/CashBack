@@ -109,7 +109,6 @@
                         dataType: 'jsonp',
                         crossDomain: true,
                         success: ((res) => {
-                            console.log(res)
                             let result = res.data.results.n_tbk_item;
                             if (result) {
                                 this.productDetail = result;
