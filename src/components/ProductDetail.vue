@@ -147,11 +147,94 @@
     }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
     #productDetail {
+        height: 100%;
+        background-color: #fff;
         .product-main {
             overflow: auto;
             padding-bottom: 50px;
+        }
+
+        .price-info {
+            padding: .1rem .2rem;
+            height: .8rem;
+            align-items: center;
+            background-image: -webkit-linear-gradient(0deg, #ffac36, #ff611b); 
+            color: #fff;
+            .current em {
+                font-size: .36rem;
+            }
+
+            .origin {
+                margin: 0 .1rem;
+                color: rgba(255, 255, 255, .5);
+                font-size: .26rem;
+            }
+
+            .van-col:nth-child(2) span {
+                font-size: .36rem;
+                line-height: .36rem;
+            }
+        }
+        .product-images {
+            position: relative;
+            background-color: #efefef;
+
+            .show-quan {
+                position: absolute;
+                top:10px;
+                right: 10px;
+                z-index:1;
+                width: 50px;
+                height: 45px;
+                background: url('../assets/img/quan.png') no-repeat left center;
+                background-size: contain;
+                text-align: center;
+                color: #fff;
+
+                div:nth-child(1) {
+                    padding: 5px 0;
+                    color: #ff611b;
+                }
+            }
+        }
+
+        .reward {
+            position: relative;
+            background-color: #ffac36;
+            color: #fff;
+            padding: 2px 5px 4px 5px;
+            border-radius: 3px;
+        }
+
+        .reward::after {
+            content: "";
+            position: absolute;
+            left: 20%;
+            bottom: -4px;
+            width: 6px;
+            height: 6px;
+            background-color: #ffac36;
+            transform: rotate(45deg) translateX(-20%);
+            z-index: 9;
+        }
+
+        .product-title {
+            padding: .2rem;
+            font-size: .32rem;
+            color: rgb(13, 8, 5);
+        }
+
+        .reward-sales {
+            margin: .13rem 0;
+            // position: absolute;
+            // left: 13px;
+            // right: 13px;
+            // bottom: 60px;
+            // z-index: 1;
+            align-items: center;
+            color: rgb(143, 154, 168);
         }
     }
 </style>

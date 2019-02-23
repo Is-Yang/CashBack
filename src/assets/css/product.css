@@ -48,7 +48,7 @@ img {
 
 .van-nav-bar .van-icon {
     font-size: 24px;
-    color: #323233;
+    color: #888;
 }
 
 .van-popup {
@@ -65,90 +65,8 @@ img {
     border-radius: 0;
 }
 
-#productDetail {
-    height: 100%;
-    background-color: #fff;
-}
-#productDetail .product-images {
-    position: relative;
-    background-color: #efefef;
-}
-#productDetail .product-images .show-quan {
-    position: absolute;
-    top:10px;
-    right: 10px;
-    z-index:1;
-    width: 50px;
-    height: 45px;
-    background: url('../img/quan.png') no-repeat left center;
-    background-size: contain;
-    text-align: center;
-    color: #fff;
-
-}
-
-#productDetail .product-images .show-quan div:nth-child(1) {
-    padding: 5px 0;
-    color: #ff611b;
-}
-
-#productDetail .price-info {
-    padding: .1rem .2rem;
-    height: .8rem;
-    align-items: center;
-    background-image: -webkit-linear-gradient(0deg, #ffac36, #ff611b); 
-    color: #fff;
-}
-
-#productDetail .price-info .current em {
-    font-size: .36rem;
-}
-
-#productDetail .price-info .origin {
-    margin: 0 .1rem;
-    color: rgba(255, 255, 255, .5);
-    font-size: .26rem;
-}
-
-#productDetail .price-info .van-col:nth-child(2) span {
-    font-size: .36rem;
-    line-height: .36rem;
-}
-
-#productDetail .product-title {
-    padding: .2rem;
-    font-size: .32rem;
-    color: rgb(13, 8, 5);
-}
-
-#productDetail .reward-sales {
-    position: absolute;
-    left: 13px;
-    right: 13px;
-    bottom: 60px;
-    z-index: 1;
-    align-items: center;
-    color: rgb(143, 154, 168);
-}
-
-#productDetail .reward {
-    position: relative;
-    background-color: #ffac36;
-    color: #fff;
-    padding: 2px 5px 4px 5px;
-    border-radius: 3px;
-}
-
-#productDetail .reward::after {
-    content: "";
-    position: absolute;
-    left: 20%;
-    bottom: -4px;
-    width: 6px;
-    height: 6px;
-    background-color: #ffac36;
-    transform: rotate(45deg) translateX(-20%);
-    z-index: 9;
+[class*=van-hairline]::after {
+    border-color: #e8e8e8;
 }
 
 .share {

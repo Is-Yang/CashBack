@@ -3,7 +3,7 @@
         <div class="head-wrap">
             <van-nav-bar left-arrow>
                 <form action="/" slot="title">
-                    <van-search slot="title" v-model="keywords" placeholder="请输入搜索关键词" @search="onSearch">
+                    <van-search slot="title" v-model="paramsScreen.keywords" placeholder="请输入搜索关键词" @search="onSearch">
                     </van-search>
                 </form>
                 <div slot="right" @click="onSearch">搜索</div>
@@ -40,16 +40,16 @@
 
         <van-list class="list-wrap" v-model="dataLoading" :finished="finished" finished-text="已到达最底" @load="onLoad">
             <van-cell v-for="(item, index) in list" :key="index">
-                <van-row type="flex">
+                <van-row type="flex" @click.native="link(item.num_iid)">
                     <van-col class="product-img">
-                        <img :src="item.pict_url+'_240x240'" @click="link(item.num_iid)" />
+                        <img :src="item.pict_url+'_240x240'" />
                         <div class="discounts" v-if="item.coupon_info">
                             <span>{{item.coupon_info}}</span>
                         </div>
                     </van-col>
                     <van-col offset="1" class="product-content">
                         <div class="product-info">
-                            <div class="product-tit" @click="link(item.num_iid)">
+                            <div class="product-tit">
                                 {{item.title}}
                             </div>
                             <van-row type="flex" justify="space-between">
@@ -64,7 +64,10 @@
                         <div class="item-foot">
                             <van-row type="flex" justify="space-between">
                                 <van-col>
-                                    <div class="item-coupon" v-if="item.coupon_amount != 0">{{'￥' + item.coupon_amount}}</div>
+                                    <div class="item-coupon" v-if="item.coupon_amount != 0">
+                                        券 &nbsp;
+                                        {{'￥' + item.coupon_amount}}
+                                    </div>
                                 </van-col>
                                 <van-col>
                                     <div class="earnings">预估收益：{{'￥' + item.coupon_income}}</div>
@@ -86,7 +89,6 @@
     export default {
         data() {
             return {
-                keywords: '女装',
                 isNavActive: 0,
                 isActive: 0,
                 isSort: '',
@@ -99,6 +101,7 @@
                 paramsScreen: {
                     checked: false,
                     page_no: 1,
+                    keywords: '女装',
                 },
                 navScreen: [
                     {
@@ -198,7 +201,7 @@
                     data: {
                         page_no: this.paramsScreen.page_no,
                         page_size: 20,
-                        q: params.q || this.paramsScreen.keywords,
+                        q: this.paramsScreen.keywords,
                         sort_type: this.paramsScreen.sort_type || 0,
                         is_overseas: this.paramsScreen.is_overseas || false,
                         is_tmall: this.paramsScreen.is_tmall || false,
@@ -283,7 +286,7 @@
     }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 #productList {
     .head-wrap {
         position: fixed;
@@ -328,12 +331,12 @@
     }
 
     .screen-list {
-        padding: .25rem .5rem;
+        padding: .1rem .5rem;
         background-color: #fff;
 
         .screen-item {
-            height: .68rem;
-            line-height: .68rem;
+            height: .6rem;
+            line-height: .6rem;
             font-size: .28rem; 
             color: rgb(102, 102, 102);
 
@@ -361,6 +364,7 @@
         .van-cell {
             margin-bottom: .2rem;
             padding: 10px;
+            cursor: pointer;
         }
 
         .product-img {
@@ -391,7 +395,8 @@
             font-size: .26rem;
             line-height: .34rem;
             margin-bottom: .1rem;
-            color: #323233;
+            color: #454544;
+            font-weight: 600;
         }
 
         .product-info {
@@ -431,13 +436,30 @@
             } 
 
             .item-coupon {
-                width: 50px;
-                height: 18px;
-                padding-left: 8px;
-                background: url('../assets/img/list_quan.png') no-repeat left center;
-                background-size: contain;
+                padding: 1px 6px;
+                background-color: #fc5260;
+                border-radius: 2px;
                 text-align: center;
                 color: #fff;
+                position: relative;
+
+                &::after, &::before{
+                    content: "";
+                    position: absolute;
+                    height: 4px;
+                    width: 4px;
+                    background-color: #fff;
+                    border-radius: 50%;
+                    left: 40%;
+                    transform: translateX(-40%);
+                    z-index: 9;
+                }
+                &::after {
+                    bottom: -1px;
+                }
+                &::before {
+                    top: -1px;
+                }
             }
 
             .earnings {
