@@ -17,7 +17,7 @@
             </div>
 
             <van-row type="flex" class="product-title">
-                <van-col class="icon-coupon" v-if="productDetail['coupon_money']"></van-col>
+                <!-- <van-col class="icon-coupon" v-if="productDetail['coupon_money']"></van-col> -->
                 <van-col>{{productDetail.title}}</van-col>
             </van-row>
 
@@ -151,8 +151,15 @@
     #productDetail {
         height: 100%;
         background-color: #fff;
+        .van-nav-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: 1;
+        }
         .product-main {
             overflow: auto;
+            padding-top: 46px;
             padding-bottom: 50px;
         }
 
@@ -185,7 +192,7 @@
                 position: absolute;
                 top:10px;
                 right: 10px;
-                z-index:1;
+                z-index: inherit;
                 width: 50px;
                 height: 45px;
                 background: url('../assets/img/quan.png') no-repeat left center;
@@ -194,7 +201,7 @@
                 color: #fff;
 
                 div:nth-child(1) {
-                    padding: 5px 0;
+                    padding: 5px 0 3px;
                     color: #ff611b;
                 }
             }
@@ -224,10 +231,11 @@
             padding: .2rem;
             font-size: .32rem;
             color: rgb(13, 8, 5);
+            font-weight: 600;
         }
 
         .reward-sales {
-            margin: .13rem 0;
+            margin: .13rem 0.2rem;
             // position: absolute;
             // left: 13px;
             // right: 13px;

@@ -3,7 +3,7 @@
         <div class="head-wrap">
             <van-nav-bar left-arrow>
                 <form action="/" slot="title">
-                    <van-search slot="title" v-model="paramsScreen.keywords" placeholder="请输入搜索关键词" @search="onSearch">
+                    <van-search slot="title" v-model="paramsScreen.keywords" placeholder="请输入关键词" @search="onSearch">
                     </van-search>
                 </form>
                 <div slot="right" @click="onSearch">搜索</div>
@@ -38,20 +38,25 @@
             </div>
         </div>
 
-        <van-list class="list-wrap" v-model="dataLoading" :finished="finished" finished-text="已到达最底" @load="onLoad">
+        <van-list class="list-wrap" 
+            v-model="dataLoading" 
+            :finished="finished" 
+            finished-text="已到达最底" 
+            @load="onLoad">
             <van-cell v-for="(item, index) in list" :key="index">
                 <van-row type="flex" @click.native="link(item.num_iid)">
                     <van-col class="product-img">
-                        <img :src="item.pict_url+'_240x240'" />
-                        <div class="discounts" v-if="item.coupon_info">
+                        <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" />
+                        <!-- <div class="discounts" v-if="item.coupon_info">
                             <span>{{item.coupon_info}}</span>
-                        </div>
+                        </div> -->
                     </van-col>
                     <van-col offset="1" class="product-content">
                         <div class="product-info">
-                            <div class="product-tit">
-                                {{item.title}}
-                            </div>
+                            <van-row type="flex" class="product-tit">
+                                <!-- <van-col class="icon-coupon" v-if="item.coupon_amount != 0"></van-col> -->
+                                <van-col>{{item.title}}</van-col>
+                            </van-row>
                             <van-row type="flex" justify="space-between">
                                 <van-col>
                                     <span class="price">{{'￥' + (item.zk_final_price - item.coupon_amount)}}</span>
@@ -86,6 +91,7 @@
 </template>
 
 <script>
+
     export default {
         data() {
             return {
@@ -101,6 +107,7 @@
                 paramsScreen: {
                     checked: false,
                     page_no: 1,
+                    q: '',
                     keywords: '女装',
                 },
                 navScreen: [
@@ -139,30 +146,13 @@
         },
         mounted() {
             window.addEventListener('resize', this.handleResize);
-            window.addEventListener('onscroll', this.handleScroll);
         },
         created() {
             setTimeout(() => {
                 this.handleResize();
-                this.handleScroll();
             }, 100);
         },
-        destroyed () {
-            window.removeEventListener('onscroll', this.handleScroll);
-        },
         methods: {
-            handleScroll() {
-                window.onscroll = (() => {
-                    let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                    let windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
-                    let scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
-                    if (scrollTop + windowHeight == scrollHeight) {
-                        this.flag = true;
-                        this.paramsScreen.page_no++;
-                        this.onLoad(this.paramsScreen);
-                    }
-                });
-            },
             handleResize() {
                 let headWrap = document.getElementsByClassName("head-wrap")[0];
                 let listWrap = document.getElementsByClassName("list-wrap")[0];
@@ -181,8 +171,12 @@
                     })
                 }
             },
+            toSrollTop(){
+                return document.documentElement.scrollTop = 0;
+            },
             onLoad(params = {}) {
-                this.loading = true;
+                // 判断关键字 如果关键字为空，则搜索关键字为上一个
+                this.paramsScreen.q = this.paramsScreen.keywords ? this.paramsScreen.keywords : this.paramsScreen.q;
                 Object.assign(this.paramsScreen, params);
                 let _this = this;
 
@@ -196,12 +190,15 @@
                     is_tmall：true天猫
                     has_coupon：有优惠
                 */
+                if (this.flag) {
+                    this.toSrollTop();
+                }
 
                 $.ajax('http://search.jifan.dxanm.com/shop/index', {
                     data: {
-                        page_no: this.paramsScreen.page_no,
+                        page_no: this.flag ? 1 : this.paramsScreen.page_no,
                         page_size: 20,
-                        q: this.paramsScreen.keywords,
+                        q: this.paramsScreen.q,
                         sort_type: this.paramsScreen.sort_type || 0,
                         is_overseas: this.paramsScreen.is_overseas || false,
                         is_tmall: this.paramsScreen.is_tmall || false,
@@ -211,17 +208,23 @@
                     crossDomain: true,
                     success: function (res) {
                         if (res.data.result_list && res.data.result_list.map_data.length > 0) {
-                            if (_this.flag) {
-                                res.data.result_list.map_data.forEach(item => {
-                                    _this.list.push(item);
-                                });
+                            if (!_this.flag) {
+                                // res.data.result_list.map_data.forEach(item => {
+                                //     _this.list.push(item);
+                                // });
+                                 _this.list =  _this.list.concat(res.data.result_list.map_data);
+                                  _this.paramsScreen.page_no++;
+
+                                
                             } else {
                                 _this.list = res.data.result_list.map_data;
+                                _this.paramsScreen.page_no = 2;
+                                _this.flag = false;
                             }
-                            // 加载状态结束
-                            _this.dataLoading = false;
-                            _this.loading = false;
 
+                            // 加载状态结束
+                             _this.dataLoading = false;
+                            
                             // 再去请求是否有数据
                             if (_this.list.length >= res.data.total_results) {
                                 _this.finished = true;
@@ -234,7 +237,7 @@
                 this.isActive = value;
                 if (value != 2 && value != 3) {
                     this.paramsScreen.sort_type = value;
-                    this.flag = false;
+                    this.flag = true;
                     this.isSort = '';
                     this.onLoad(this.paramsScreen);
                 } 
@@ -251,11 +254,11 @@
                    this.paramsScreen.is_tmall = false;
                    this.paramsScreen.is_overseas = false;
                 }
-                this.flag = false;
+                this.flag = true;
                 this.onLoad(this.paramsScreen);
             },
             onSearch() {
-                this.flag = false;
+                this.flag = true;
                 this.onLoad(this.paramsScreen);
             },
             sortScreen(sort, type) {
@@ -278,7 +281,7 @@
                      this.paramsScreen.sort_type = '';
                 }
 
-                this.flag = false;
+                this.flag = true;
                 this.onLoad(this.paramsScreen);
             }
         }
@@ -395,7 +398,7 @@
             font-size: .26rem;
             line-height: .34rem;
             margin-bottom: .1rem;
-            color: #454544;
+            color: rgb(13, 8, 5);
             font-weight: 600;
         }
 

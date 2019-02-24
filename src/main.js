@@ -3,13 +3,15 @@ import VueRouter from 'vue-router'
 import App from './App.vue'
 import Vant from 'vant';
 import 'vant/lib/index.css';
-import './assets/css/product.css';
+import './assets/css/common.css';
 
 import ProductList from './components/ProductList'
 import ProductDetail from './components/ProductDetail'
+import { Lazyload } from 'vant';
 
 Vue.use(Vant);
 Vue.use(VueRouter)
+Vue.use(Lazyload);
 
 const routes = [
   {
