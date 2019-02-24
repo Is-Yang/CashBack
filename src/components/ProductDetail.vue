@@ -10,26 +10,27 @@
                     </van-swipe-item>
                 </van-swipe>
 
-                <div class="show-quan" v-if="coupon_money">
+                <div class="show-quan" v-if="coupon_money>0">
                     <div>减{{coupon_money}}元</div>
                     <div>领券</div>
                 </div>
             </div>
 
             <van-row type="flex" class="product-title">
-                <!-- <van-col class="icon-coupon" v-if="productDetail['coupon_money']"></van-col> -->
+                <van-col class="icon-coupon taobao" v-if="productDetail['user_type']==0"></van-col>
+                <van-col class="icon-coupon tmall" v-if="productDetail['user_type']==1"></van-col>
                 <van-col>{{productDetail.title}}</van-col>
             </van-row>
 
             <van-row type="flex" justify="space-between" class="price-info">
                 <van-col>
-                    <span class="current">￥<em>{{productDetail['zk_final_price']}}</em></span>
+                    <span class="current">￥<em>{{current_price}}</em></span>
                     <del class="origin">￥{{productDetail['zk_final_price']}}</del>
                 </van-col>
-                <!-- <van-col>
-                    <span>￥5.0</span>
-                    <div>双倍奖励金</div>
-                </van-col> -->
+                <van-col>
+                    <span>￥{{coupon_income}}</span>
+                    <div>预估收益</div>
+                </van-col>
             </van-row>
 
             <van-row type="flex" justify="space-between" class="reward-sales">
@@ -46,8 +47,7 @@
         <van-goods-action>
             <van-goods-action-mini-btn text="分享" @click="shareMask = !shareMask" class="share"></van-goods-action-mini-btn>
 
-            <van-goods-action-big-btn primary text="省钱购买" class="buy" id="copy-btn" @click="onBuy"
-                data-clipboard-target="#coupon-copy"></van-goods-action-big-btn>
+            <van-goods-action-big-btn primary :text="buyText" ref="buy" class="buy" id="copy-btn" @click="onBuy"></van-goods-action-big-btn>
         </van-goods-action>
 
         <input hidden id="coupon-copy" type="text" v-model="tkl" />
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+    import ClipboardJS from 'clipboard';
     export default {
         data() {
             return {
@@ -72,7 +73,11 @@
                 loading: false,
                 userId: '',
                 tkl: '',
-                coupon_money: '',
+                clipboardObject: null,
+                buyText: '省钱购买',
+                coupon_money: 0,
+                coupon_income: '',
+                current_price: '',
                 productDetail: {
                     small_images: [],
                 }
@@ -131,17 +136,33 @@
                     crossDomain: true,
                     success: ((res) => {
                         let data = res.data;
-                        this.coupon_money = data.coupon_money;
+                        if(data.coupon_money) {
+                            this.coupon_money = data.coupon_money;
+                            this.current_price = this.productDetail.zk_final_price -data.coupon_money;
+                        }else{
+                            this.current_price = this.productDetail.zk_final_price;
+                        }
+                        this.coupon_income = data.coupon_income?data.coupon_income:data.income;
                         this.tkl = data.tkl;
+
+                        let _this = this;
+                        var copy_btn = document.getElementById('copy-btn');
+                        this.clipboardObject = new ClipboardJS(copy_btn, {
+                            text: function() {
+                                return _this.tkl;
+                            }
+                        });
+
                     })
                 })
             },
             onBuy() {
-                let clipboard = new Clipboard('#copy-btn');
                 let _this = this;
-                clipboard.on('success', function (e) {
-                    _this.show = true;
+                this.clipboardObject.on('success', function (e) {
+                    _this.$toast('已复制');
+                    _this.buyText = '已复制，请打开淘宝购买';
                 });
+                
             }
         }
     }
@@ -169,6 +190,7 @@
             align-items: center;
             background-image: -webkit-linear-gradient(0deg, #ffac36, #ff611b); 
             color: #fff;
+            text-align:center;
             .current em {
                 font-size: .36rem;
             }

@@ -54,7 +54,8 @@
                     <van-col offset="1" class="product-content">
                         <div class="product-info">
                             <van-row type="flex" class="product-tit">
-                                <!-- <van-col class="icon-coupon" v-if="item.coupon_amount != 0"></van-col> -->
+                                <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type==0"></van-col>
+                                <van-col class="icon-coupon tmall icon-coupon-list" v-if="item.user_type==1"></van-col>
                                 <van-col>{{item.title}}</van-col>
                             </van-row>
                             <van-row type="flex" justify="space-between">
@@ -152,6 +153,22 @@
                 this.handleResize();
             }, 100);
         },
+        /*beforeRouteEnter(to, from, next) {
+            if (from.path == "/detail") {
+              to.meta.isBack = true;
+            } else {
+              to.meta.isBack = false;
+            }
+            next();
+        },
+        activated() {
+            if (!this.$route.meta.isBack) {
+              this.list = [];
+              this.paramsScreen.page_no = 1;
+              this.onLoad();
+            }
+            this.$route.meta.isBack = false;
+        },*/
         methods: {
             handleResize() {
                 let headWrap = document.getElementsByClassName("head-wrap")[0];

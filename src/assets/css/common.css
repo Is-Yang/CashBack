@@ -107,11 +107,25 @@ img {
 }
 .icon-coupon {
     margin-right: .1rem;
-    width: .6rem;
-    height: .35rem;
+    width: .37rem;
+    height: .26rem;
     background: url("../img/icon_quan.png") no-repeat left center;
     background-size: contain;
     margin-top: .1rem;
+}
+.icon-coupon-list{
+    width: .50rem;
+    margin-top: .03rem;
+}
+
+.taobao{
+    background: url('../img/bigtaobao@3x.png') no-repeat left center;
+    background-size: cover;
+}
+
+.tmall{
+    background: url('../img/bigtmall@3x.png') no-repeat left center;
+    background-size: cover;
 }
 
 .fade-enter-active, .fade-leave-active {

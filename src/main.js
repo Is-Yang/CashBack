@@ -4,6 +4,7 @@ import App from './App.vue'
 import Vant from 'vant';
 import 'vant/lib/index.css';
 import './assets/css/common.css';
+import { Toast } from 'vant';
 
 import ProductList from './components/ProductList'
 import ProductDetail from './components/ProductDetail'
@@ -12,6 +13,7 @@ import { Lazyload } from 'vant';
 Vue.use(Vant);
 Vue.use(VueRouter)
 Vue.use(Lazyload);
+Vue.use(Toast);
 
 const routes = [
   {
@@ -30,7 +32,17 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  scrollBehavior (to, from, savedPosition) {
+      if (savedPosition) {
+          return savedPosition
+      }   else {
+          if (from.meta.keepAlive) {
+              from.meta.savedPosition = document.body.scrollTop;
+          }
+          return { x: 0, y: to.meta.savedPosition || 0 }
+      }
+  }
 })
 
 Vue.config.productionTip = false
