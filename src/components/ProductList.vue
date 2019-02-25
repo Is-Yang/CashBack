@@ -189,7 +189,8 @@
                 }
             },
             toSrollTop(){
-                return document.documentElement.scrollTop = 0;
+                document.documentElement.scrollTop = document.body.scrollTop = 0;
+                return ;
             },
             onLoad(params = {}) {
                 // 判断关键字 如果关键字为空，则搜索关键字为上一个
@@ -211,7 +212,7 @@
                     this.toSrollTop();
                 }
 
-                $.ajax('http://search.jifan.dxanm.com/shop/index', {
+                $.ajax(this.GLOBAL.http_api+'/shop/index', {
                     data: {
                         page_no: this.flag ? 1 : this.paramsScreen.page_no,
                         page_size: 20,
@@ -241,6 +242,7 @@
 
                             // 加载状态结束
                              _this.dataLoading = false;
+                             _this.loading = false;
                             
                             // 再去请求是否有数据
                             if (_this.list.length >= res.data.total_results) {
@@ -256,6 +258,7 @@
                     this.paramsScreen.sort_type = value;
                     this.flag = true;
                     this.isSort = '';
+                    this.loading = true;
                     this.onLoad(this.paramsScreen);
                 } 
             },
@@ -272,10 +275,14 @@
                    this.paramsScreen.is_overseas = false;
                 }
                 this.flag = true;
+                this.loading = true;
+                this.finished = false;
                 this.onLoad(this.paramsScreen);
             },
             onSearch() {
                 this.flag = true;
+                this.loading = true;
+                this.finished = false;
                 this.onLoad(this.paramsScreen);
             },
             sortScreen(sort, type) {
@@ -299,6 +306,7 @@
                 }
 
                 this.flag = true;
+                this.loading = true;
                 this.onLoad(this.paramsScreen);
             }
         }

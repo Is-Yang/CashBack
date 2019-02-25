@@ -8,12 +8,15 @@ import { Toast } from 'vant';
 
 import ProductList from './components/ProductList'
 import ProductDetail from './components/ProductDetail'
+import global_ from './components/Global'
+
 import { Lazyload } from 'vant';
 
 Vue.use(Vant);
 Vue.use(VueRouter)
 Vue.use(Lazyload);
 Vue.use(Toast);
+Vue.prototype.GLOBAL = global_
 
 const routes = [
   {
@@ -46,7 +49,6 @@ const router = new VueRouter({
 })
 
 Vue.config.productionTip = false
-
 
 new Vue({
   router,

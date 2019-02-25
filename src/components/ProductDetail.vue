@@ -107,7 +107,7 @@
                     this.itemId = this.$route.query.item_id;
 
                     let data = [];
-                    $.ajax('http://search.jifan.dxanm.com/shop/detail', {
+                    $.ajax(this.GLOBAL.http_api+'/shop/detail', {
                         data: {
                             num_iid: this.itemId
                         },
@@ -130,7 +130,7 @@
                 this.$router.back()
             },
             getCoupon() {
-                $.ajax('http://coupon.dxanm.com/coupon/get?user_id=' + this.userId + '&item_id=' + this.itemId, {
+                $.ajax(this.GLOBAL.conpon_api+'/coupon/get?user_id=' + this.userId + '&item_id=' + this.itemId, {
                     data: {},
                     dataType: 'jsonp',
                     crossDomain: true,
