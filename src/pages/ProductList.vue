@@ -324,6 +324,37 @@
         z-index: 9;
     }
 
+    .van-nav-bar__left, .van-nav-bar__right {
+        width: 15%;
+        bottom: 50%;
+        font-size: 14px;
+        position: absolute;
+        transform: translateY(50%);
+    }
+
+    .van-nav-bar__title {
+        max-width: 70%;
+        height: 100%;
+    }
+
+    .van-nav-bar__title form {
+        height: 100%;
+    }
+
+    .van-nav-bar__left {
+        left: 0;
+    }
+
+    .van-nav-bar__right {
+        right: 0;
+        color: #ff611b;
+    }
+
+    .van-nav-bar .van-icon {
+        font-size: 24px;
+        color: #888;
+    }
+
     .van-search {
         padding: 0;
         height: 100%;

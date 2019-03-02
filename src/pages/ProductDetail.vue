@@ -54,8 +54,6 @@
 
         <div class="shareMask" v-if="shareMask" @click="shareMask = false"></div>
 
-        <van-popup v-model="show">复制成功</van-popup>
-
         <div class="loading" v-if="loading">
             <van-loading type="spinner" color="white" />
         </div>
@@ -69,7 +67,6 @@
             return {
                 shareMask: false,
                 itemId: '',
-                show: false,
                 loading: false,
                 userId: '',
                 tkl: '',
