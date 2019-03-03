@@ -212,7 +212,7 @@
                     this.toSrollTop();
                 }
 
-                $.ajax(this.GLOBAL.http_api+'/shop/index', {
+                $.ajax(this.API.http_api+'/shop/index', {
                     data: {
                         page_no: this.flag ? 1 : this.paramsScreen.page_no,
                         page_size: 20,
@@ -327,7 +327,7 @@
     .van-nav-bar__left, .van-nav-bar__right {
         width: 15%;
         bottom: 50%;
-        font-size: 14px;
+        font-size: .28rem;
         position: absolute;
         transform: translateY(50%);
     }
@@ -351,7 +351,7 @@
     }
 
     .van-nav-bar .van-icon {
-        font-size: 24px;
+        font-size: .48rem;
         color: #888;
     }
 

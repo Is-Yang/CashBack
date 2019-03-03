@@ -1,7 +1,6 @@
 <template>
     <div id="productDetail">
-        <van-nav-bar left-arrow title="商品详情" @click-left="onClickLeft"></van-nav-bar>
-
+        <Header title="商品详情"></Header>
         <div class="product-main">
             <div class="product-images">
                 <van-swipe :autoplay="3000" indicator-color="white" v-if="productDetail.small_images.length > 0">
@@ -104,7 +103,7 @@
                     this.itemId = this.$route.query.item_id;
 
                     let data = [];
-                    $.ajax(this.GLOBAL.http_api+'/shop/detail', {
+                    $.ajax(this.API.http_api+'/shop/detail', {
                         data: {
                             num_iid: this.itemId
                         },
@@ -123,11 +122,8 @@
                     this.getCoupon();
                 }
             },
-            onClickLeft() {
-                this.$router.back()
-            },
             getCoupon() {
-                $.ajax(this.GLOBAL.conpon_api+'/coupon/get?user_id=' + this.userId + '&item_id=' + this.itemId, {
+                $.ajax(this.API.conpon_api+'/coupon/get?user_id=' + this.userId + '&item_id=' + this.itemId, {
                     data: {},
                     dataType: 'jsonp',
                     crossDomain: true,
@@ -169,12 +165,6 @@
     #productDetail {
         height: 100%;
         background-color: #fff;
-        .van-nav-bar {
-            position: fixed;
-            left: 0;
-            right: 0;
-            z-index: 1;
-        }
         .product-main {
             overflow: auto;
             padding-top: 46px;

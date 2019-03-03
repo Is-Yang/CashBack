@@ -38,6 +38,11 @@ img {
     border-color: #e8e8e8;
 }
 
+.van-button--danger {
+    background-color: #ff611b;
+    border: 1px solid #ff611b;
+}
+
 .share {
     width: 27.85%;
     background-color: #ffac36;
@@ -156,3 +161,4 @@ img {
 .txt-left {
     text-align: left;
 }
+

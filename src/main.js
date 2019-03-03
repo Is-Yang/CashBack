@@ -9,15 +9,21 @@ import {
   Toast
 } from 'vant';
 
-
-import global_ from './components/Global'
+import component from './components/index'
+import api_ from './api'
 
 Vue.use(Vant);
 Vue.use(Lazyload);
 Vue.use(Toast);
-Vue.prototype.GLOBAL = global_
+Vue.prototype.API = api_;
 
 Vue.config.productionTip = false
+
+// 注册全局组件
+Object.keys(component).forEach(key => {
+  var name = key.replace(/(\w)/, (v) => v.toUpperCase()); // 首字母大写
+  Vue.component(`${name}`, component[key]);
+});
 
 new Vue({
   router,

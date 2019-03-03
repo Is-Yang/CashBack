@@ -1,6 +1,7 @@
-import Index from '../pages/Index';
-import ProductList from '../pages/ProductList';
+import Index from '../pages/Index'
+import ProductList from '../pages/ProductList'
 import ProductDetail from '../pages/ProductDetail'
+import FlashSale from '../pages/FlashSale'
 
 export default [{
     path: '/index',
@@ -17,6 +18,13 @@ export default [{
     path: '/detail',
     component: ProductDetail,
     name: '商品详情',
+    meta: {
+        keepAlive: false
+    }
+}, {
+    path: '/sale',
+    component: FlashSale,
+    name: '限时抢购',
     meta: {
         keepAlive: false
     }

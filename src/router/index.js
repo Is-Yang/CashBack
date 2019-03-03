@@ -4,7 +4,7 @@ import Router from 'vue-router'
 import Home from './home'
 
 Vue.use(Router)
-const baseRouter = [{path: '/'}];
+const baseRouter = [{path: '/', redirect:"/index"}];
 
 const router = new Router({
     routes: baseRouter.concat(Home),
