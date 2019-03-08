@@ -1,4 +1,4 @@
-const http_api = "http://search.jifan.dxanm.com";
+const http_api = "http://mall.api.dxanm.com";
 
 const conpon_api = "http://coupon.dxanm.com";
 

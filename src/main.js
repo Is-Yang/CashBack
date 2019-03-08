@@ -10,12 +10,13 @@ import {
 } from 'vant';
 
 import component from './components/index'
-import api_ from './api'
+import host from './host'
 
 Vue.use(Vant);
 Vue.use(Lazyload);
 Vue.use(Toast);
-Vue.prototype.API = api_;
+Vue.prototype.$host = host;
+Vue.prototype.$eventHub = Vue.prototype.$eventHub || new Vue()
 
 Vue.config.productionTip = false
 

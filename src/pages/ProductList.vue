@@ -1,19 +1,25 @@
 <template>
     <div id="productList">
         <div class="head-wrap">
-            <van-nav-bar left-arrow>
+            <van-nav-bar left-arrow v-if="catId == ''" @click-left="onClickLeft">
                 <form action="/" slot="title">
-                    <van-search slot="title" v-model="paramsScreen.keywords" placeholder="请输入关键词" @search="onSearch">
+                    <van-search slot="title" v-model="paramsScreen.keywords" placeholder="请输入关键词" 
+                        @search="onSearch">
                     </van-search>
                 </form>
-                <div slot="right" @click="onSearch">搜索</div>
+                <!-- <div slot="right" @click="onSearch">搜索</div> -->
             </van-nav-bar>
+
+            <Header :title="catName" v-if="catId != ''"></Header>
 
             <div class="product-screen">
                 <div class="van-hairline--bottom">
                     <van-row type="flex" justify="space-between" class="nav-screen">
                         <van-col v-for="(item, index) in navScreen" :key="index" :class="{active:index==isNavActive}">
-                            <div @click="onNavScreen(item.value)">{{item.label}}</div>
+                            <!-- 类型列表时不显示全球购 -->
+                            <div @click="onNavScreen(item.value)" v-if="catId != '' && item.value != 2">{{item.label}}</div>
+                            <!-- 商品列表搜索时 -->
+                            <div @click="onNavScreen(item.value)" v-if="catId == ''">{{item.label}}</div>
                         </van-col>
                     </van-row>
                 </div>
@@ -54,14 +60,16 @@
                     <van-col offset="1" class="product-content">
                         <div class="product-info">
                             <van-row type="flex" class="product-tit">
-                                <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type==0"></van-col>
-                                <van-col class="icon-coupon tmall icon-coupon-list" v-if="item.user_type==1"></van-col>
+                                <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type == 0"></van-col>
+                                <van-col class="icon-coupon tmall icon-coupon-list" v-if="item.user_type == 1"></van-col>
                                 <van-col>{{item.title}}</van-col>
                             </van-row>
                             <van-row type="flex" justify="space-between">
                                 <van-col>
-                                    <span class="price">{{'￥' + (item.zk_final_price - item.coupon_amount)}}</span>
-                                    <span>天猫价：{{'￥' + item.zk_final_price}}</span>
+                                    <span class="price">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
+                                    <span>
+                                        {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：{{'￥' + item.zk_final_price}}
+                                    </span>
                                 </van-col>
                                 <van-col>月销：{{item.volume}}</van-col>
                             </van-row>
@@ -70,12 +78,12 @@
                         <div class="item-foot">
                             <van-row type="flex" justify="space-between">
                                 <van-col>
-                                    <div class="item-coupon" v-if="item.coupon_amount != 0">
+                                    <div class="item-coupon" v-if="item.coupon_amount && item.coupon_amount != 0">
                                         券 &nbsp;
                                         {{'￥' + item.coupon_amount}}
                                     </div>
                                 </van-col>
-                                <van-col>
+                                <van-col v-if="item.coupon_income">
                                     <div class="earnings">预估收益：{{'￥' + item.coupon_income}}</div>
                                 </van-col>
                             </van-row>
@@ -84,16 +92,13 @@
                 </van-row>
             </van-cell>
         </van-list>
-
-        <div class="loading" v-if="loading">
-            <van-loading type="spinner" color="white" />
-        </div>
     </div>
 </template>
 
 <script>
 
     export default {
+        inject: ['reload'],
         data() {
             return {
                 isNavActive: 0,
@@ -101,10 +106,11 @@
                 isSort: '',
                 sortType: '',
                 list: [],
-                loading: false,
                 dataLoading: false,
                 finished: false,
                 flag: false,
+                catId: '',
+                catName: '',
                 paramsScreen: {
                     checked: false,
                     page_no: 1,
@@ -149,27 +155,38 @@
             window.addEventListener('resize', this.handleResize);
         },
         created() {
+            this.init();
             setTimeout(() => {
                 this.handleResize();
             }, 100);
         },
-        /*beforeRouteEnter(to, from, next) {
-            if (from.path == "/detail") {
-              to.meta.isBack = true;
-            } else {
-              to.meta.isBack = false;
-            }
-            next();
-        },
-        activated() {
-            if (!this.$route.meta.isBack) {
-              this.list = [];
-              this.paramsScreen.page_no = 1;
-              this.onLoad();
-            }
-            this.$route.meta.isBack = false;
-        },*/
+        // watch: {
+        //     '$route' (to, form) {
+        //         this.init();
+        //         this.flag = true;
+        //         console.log(this.paramsScreen)
+        //         this.onLoad();
+        //     }
+        // },
         methods: {
+            init() {
+                let route = this.$route;
+                // 分类列表
+                if (route.path == '/classify') {
+                    if (route.query.cat_id) {
+                        this.catId = route.query.cat_id;
+                    }
+                    if (route.query.cat_name) {
+                        this.catName = route.query.cat_name;
+                    }
+                } else if (route.path == '/list') {
+                    // 如果路由传递过来有关键字参数，则取关键字参数值，否则默认‘女装’
+                    this.paramsScreen.keywords = route.query.keyword ? route.query.keyword : this.paramsScreen.keywords;
+                } 
+            },
+            onClickLeft() {
+                this.$router.back()
+            },
             handleResize() {
                 let headWrap = document.getElementsByClassName("head-wrap")[0];
                 let listWrap = document.getElementsByClassName("list-wrap")[0];
@@ -193,11 +210,7 @@
                 return ;
             },
             onLoad(params = {}) {
-                // 判断关键字 如果关键字为空，则搜索关键字为上一个
-                this.paramsScreen.q = this.paramsScreen.keywords ? this.paramsScreen.keywords : this.paramsScreen.q;
                 Object.assign(this.paramsScreen, params);
-                let _this = this;
-
                 /*
                     查询条件
                     page_no：翻页，可补充，默认是1
@@ -212,45 +225,86 @@
                     this.toSrollTop();
                 }
 
-                $.ajax(this.API.http_api+'/shop/index', {
-                    data: {
-                        page_no: this.flag ? 1 : this.paramsScreen.page_no,
-                        page_size: 20,
-                        q: this.paramsScreen.q,
-                        sort_type: this.paramsScreen.sort_type || 0,
-                        is_overseas: this.paramsScreen.is_overseas || false,
-                        is_tmall: this.paramsScreen.is_tmall || false,
-                        has_coupon: this.paramsScreen.checked || false
-                    },
-                    dataType: 'jsonp',
-                    crossDomain: true,
-                    success: function (res) {
-                        if (res.data.result_list && res.data.result_list.map_data.length > 0) {
-                            if (!_this.flag) {
-                                // res.data.result_list.map_data.forEach(item => {
-                                //     _this.list.push(item);
-                                // });
-                                 _this.list =  _this.list.concat(res.data.result_list.map_data);
-                                  _this.paramsScreen.page_no++;
+                // 共同参数
+                const forParams = {
+                    page_size: 20,
+                    is_tmall: this.paramsScreen.is_tmall || false,
+                    has_coupon: this.paramsScreen.checked || false,
+                    sort_type: this.paramsScreen.sort_type || 0
+                }
 
+                // 是否是针对品牌类型的列表
+                if (this.catId != '') {
+                    forParams.page_num = this.flag ? 1 : this.paramsScreen.page_no;
+                    forParams.cat_id = this.catId;
+                    $.ajax(this.$host.http_api + '/mall_category_item/query_list', {
+                        data: forParams,
+                        dataType: 'jsonp',
+                        crossDomain: true,
+                        success: ((res) => {
+                            if (res.data) {
+                                if (!this.flag) {
+                                    this.list =  this.list.concat(res.data.list);
+                                    this.paramsScreen.page_no++;
+                                } else {
+                                    this.list = res.data.list;
+                                    this.paramsScreen.page_no = 2;
+                                    this.flag = false;
+                                }
+
+                                // 加载状态结束
+                                this.dataLoading = false;
+                                this.$eventHub.$emit('loading', false);
                                 
-                            } else {
-                                _this.list = res.data.result_list.map_data;
-                                _this.paramsScreen.page_no = 2;
-                                _this.flag = false;
+                                // 再去请求是否有数据
+                                if (this.list.length >= res.data.total) {
+                                    this.finished = true;
+                                }
                             }
+                        })
+                    })
 
-                            // 加载状态结束
-                             _this.dataLoading = false;
-                             _this.loading = false;
-                            
-                            // 再去请求是否有数据
-                            if (_this.list.length >= res.data.total_results) {
-                                _this.finished = true;
+                } else {  // 搜索全部商品列表
+                    // 判断关键字 如果关键字为空，则搜索关键字为上一个
+                    this.paramsScreen.q = this.paramsScreen.keywords ? this.paramsScreen.keywords : this.paramsScreen.q;
+
+                    forParams.page_no = this.flag ? 1 : this.paramsScreen.page_no;
+                    forParams.q = this.paramsScreen.q;
+                    forParams.is_overseas = this.paramsScreen.is_overseas || false;
+
+                    $.ajax(this.$host.http_api + '/shop/index', {
+                        data: forParams,
+                        dataType: 'jsonp',
+                        crossDomain: true,
+                        success: ((res) => {
+                            if (res.data) {
+                                let data = res.data;
+                                if (data.result_list && data.result_list.map_data.length > 0) {
+                                    if (!this.flag) {
+                                        // data.result_list.map_data.forEach(item => {
+                                        //     this.list.push(item);
+                                        // });
+                                        this.list =  this.list.concat(data.result_list.map_data);
+                                        this.paramsScreen.page_no++;
+                                    } else {
+                                        this.list = data.result_list.map_data;
+                                        this.paramsScreen.page_no = 2;
+                                        this.flag = false;
+                                    }
+                                }
+
+                                // 加载状态结束
+                                this.dataLoading = false;
+                                this.$eventHub.$emit('loading', false);
+                                
+                                // 再去请求是否有数据
+                                if (this.list.length >= data.total_results) {
+                                    this.finished = true;
+                                }
                             }
-                        }
-                    }
-                })
+                        }) 
+                    })
+                }
             },
             onScreen(value) {
                 this.isActive = value;
@@ -258,7 +312,7 @@
                     this.paramsScreen.sort_type = value;
                     this.flag = true;
                     this.isSort = '';
-                    this.loading = true;
+                    this.$eventHub.$emit('loading', true);
                     this.onLoad(this.paramsScreen);
                 } 
             },
@@ -275,14 +329,12 @@
                    this.paramsScreen.is_overseas = false;
                 }
                 this.flag = true;
-                this.loading = true;
-                this.finished = false;
+                this.$eventHub.$emit('loading', true);
                 this.onLoad(this.paramsScreen);
             },
             onSearch() {
                 this.flag = true;
-                this.loading = true;
-                this.finished = false;
+                this.$eventHub.$emit('loading', true);
                 this.onLoad(this.paramsScreen);
             },
             sortScreen(sort, type) {
@@ -306,7 +358,7 @@
                 }
 
                 this.flag = true;
-                this.loading = true;
+                this.$eventHub.$emit('loading', true);
                 this.onLoad(this.paramsScreen);
             }
         }
@@ -333,7 +385,8 @@
     }
 
     .van-nav-bar__title {
-        max-width: 70%;
+        max-width: 80%;
+        margin-left: 15%;
         height: 100%;
     }
 
@@ -343,11 +396,6 @@
 
     .van-nav-bar__left {
         left: 0;
-    }
-
-    .van-nav-bar__right {
-        right: 0;
-        color: #ff611b;
     }
 
     .van-nav-bar .van-icon {

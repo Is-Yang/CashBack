@@ -1,6 +1,6 @@
 <template>
     <div id="productDetail">
-        <Header title="商品详情"></Header>
+        <Header title="商品详情" :posFixed="true"></Header>
         <div class="product-main">
             <div class="product-images">
                 <van-swipe :autoplay="3000" indicator-color="white" v-if="productDetail.small_images.length > 0">
@@ -41,6 +41,11 @@
                     月销：{{productDetail['volume']}}
                 </van-col>
             </van-row>
+
+            <!-- 图文详情 -->
+            <div class="details-img">
+                <img :src="img" v-for="(img, index) in productDetail.imgeText" :key="index" />
+            </div>
         </div>
 
         <van-goods-action>
@@ -52,10 +57,6 @@
         <input hidden id="coupon-copy" type="text" v-model="tkl" />
 
         <div class="shareMask" v-if="shareMask" @click="shareMask = false"></div>
-
-        <div class="loading" v-if="loading">
-            <van-loading type="spinner" color="white" />
-        </div>
     </div>
 </template>
 
@@ -66,7 +67,6 @@
             return {
                 shareMask: false,
                 itemId: '',
-                loading: false,
                 userId: '',
                 tkl: '',
                 clipboardObject: null,
@@ -76,6 +76,7 @@
                 current_price: '',
                 productDetail: {
                     small_images: [],
+                    imgeText: []
                 }
             }
         },
@@ -98,12 +99,12 @@
             },
             init() {
                 if (this.$route.query) {
-                    this.loading = true;
+                    this.$eventHub.$emit('loading', true);
                     this.userId = this.$route.query.user_id;
                     this.itemId = this.$route.query.item_id;
 
                     let data = [];
-                    $.ajax(this.API.http_api+'/shop/detail', {
+                    $.ajax(this.$host.http_api+'/shop/detail', {
                         data: {
                             num_iid: this.itemId
                         },
@@ -115,47 +116,69 @@
                                 this.productDetail = result;
                                 this.productDetail.small_images = result.small_images.string;
                             }
-                            this.loading = false;
+                            this.$eventHub.$emit('loading', false);
                         })
                     })
-
+                    this.getDetail();
                     this.getCoupon();
                 }
             },
             getCoupon() {
-                $.ajax(this.API.conpon_api+'/coupon/get?user_id=' + this.userId + '&item_id=' + this.itemId, {
+                $.ajax(this.$host.conpon_api+'/coupon/get?user_id=' + this.userId + '&item_id=' + this.itemId, {
                     data: {},
                     dataType: 'jsonp',
                     crossDomain: true,
                     success: ((res) => {
-                        let data = res.data;
-                        if(data.coupon_money) {
-                            this.coupon_money = data.coupon_money;
-                            this.current_price = this.productDetail.zk_final_price -data.coupon_money;
-                        }else{
-                            this.current_price = this.productDetail.zk_final_price;
+                        if (res.err) {
+                            this.$toast(res.err.msg);
+                            return;
                         }
-                        this.coupon_income = data.coupon_income?data.coupon_income:data.income;
-                        this.tkl = data.tkl;
-
-                        let _this = this;
-                        var copy_btn = document.getElementById('copy-btn');
-                        this.clipboardObject = new ClipboardJS(copy_btn, {
-                            text: function() {
-                                return _this.tkl;
+                        let data = res.data;
+                        if (data) {
+                            if(data.coupon_money) {
+                                this.coupon_money = data.coupon_money;
+                                this.current_price = this.productDetail.zk_final_price - data.coupon_money;
+                            }else{
+                                this.current_price = this.productDetail.zk_final_price;
                             }
-                        });
+                            this.coupon_income = data.coupon_income ? data.coupon_income:data.income;
+                            this.tkl = data.tkl;
 
+                            let _this = this;
+                            var copy_btn = document.getElementById('copy-btn');
+                            this.clipboardObject = new ClipboardJS(copy_btn, {
+                                text: function() {
+                                    return _this.tkl;
+                                }
+                            });
+                        }
                     })
                 })
             },
             onBuy() {
                 let _this = this;
-                this.clipboardObject.on('success', function (e) {
-                    _this.$toast('已复制');
-                    _this.buyText = '已复制，请打开淘宝购买';
-                });
-                
+                if (this.clipboardObject != null) {
+                    this.clipboardObject.on('success', function (e) {
+                        _this.$toast('已复制');
+                        _this.buyText = '已复制，请打开淘宝购买';
+                    });
+                } else {
+                    _this.$toast('未获取到信息');
+                }
+            },
+            getDetail() {
+                $.ajax(this.$host.http_api + '/taobao_item/get_desc', {
+                    data: {
+                        item_id: this.itemId
+                    },
+                    dataType: 'jsonp',
+                    crossDomain: true,
+                    success: ((res) => {
+                        if (res.data) {
+                            this.productDetail.imgeText = res.data;
+                        }
+                    })
+                })
             }
         }
     }
@@ -196,6 +219,7 @@
         .product-images {
             position: relative;
             background-color: #efefef;
+            overflow: hidden;
 
             .show-quan {
                 position: absolute;

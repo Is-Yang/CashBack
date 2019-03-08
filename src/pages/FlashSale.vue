@@ -1,16 +1,16 @@
 <template>
     <div id="flash-sale">
-        <Header title="限时抢购"></Header>
+        <Header title="限时抢购" :posFixed="true"></Header>
 
         <div class="tabs-content">
-            <van-tabs>
-                <van-tab v-for="index in 8">
+            <van-tabs v-model="active" @click="getSale">
+                <van-tab v-for="(item, index) in timeNodes" :key="index">
                     <div slot="title">
-                        <span class="time">{{index}}</span>
-                        <span>已开抢</span>
+                        <span class="time">{{item.time}}</span>
+                        <span>{{item.label}}</span>
                     </div>
                     
-                     <van-list class="list-wrap" 
+                    <van-list class="list-wrap" 
                         v-model="dataLoading" 
                         :finished="finished" 
                         finished-text="已到达最底" 
@@ -18,7 +18,7 @@
                         <van-cell v-for="(item, index) in list" :key="index">
                             <van-row type="flex" @click.native="link(item.num_iid)">
                                 <van-col class="product-img">
-                                    <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" />
+                                    <img :src="item.pic_url" v-lazy="item.pic_url" />
                                 </van-col>
                                 <van-col offset="1" class="product-content">
                                     <div class="product-info">
@@ -29,14 +29,14 @@
                                         </van-row>
                                         <van-row type="flex" justify="space-between">
                                             <van-col>
-                                                <span class="price">{{'￥' + (item.zk_final_price - item.coupon_amount)}}</span>
-                                                <span>天猫价：{{'￥' + item.zk_final_price}}</span>
+                                                <span class="price" v-if="item.zk_final_price">{{'￥' + item.zk_final_price}}</span>
+                                                <span>天猫价：{{'￥' + item.reserve_price}}</span>
                                             </van-col>
                                             <van-col>月销：{{item.volume}}</van-col>
                                         </van-row>
-                                        <div class="sale-progress">
-                                            <div class="progress-tip" style="width: 30%;"></div>
-                                            已抢：1526
+                                        <div class="sale-progress" v-if="item.total_amount && item.sold_num">
+                                            <div class="progress-tip" :style="{width:(item.total_amount/(item.total_amount/item.sold_num) + '%')}"></div>
+                                            已抢：{{item.sold_num}}
                                         </div>
                                     </div>
                                     <div class="item-foot">
@@ -48,7 +48,7 @@
                                                 </div>
                                             </van-col>
                                             <van-col>
-                                                <van-button round type="danger" size="small">马上抢</van-button>
+                                                <van-button round type="danger" size="small" @click.native="link(item.num_iid)">马上抢</van-button>
                                             </van-col>
                                         </van-row>
                                     </div>
@@ -63,17 +63,192 @@
 </template>
 
 <script>
+import moment from 'moment';
 export default {
     data() {
         return {
+            active: '',
             dataLoading: false,
             finished: false,
-            list: []
+            flag: false,
+            timeNodes: [
+                {
+                    time: '12:00',
+                    label: '已开抢'
+                }, {
+                    time: '14:00',
+                    label: '已开抢'
+                }, {
+                    time: '16:00',
+                    label: '已开抢'
+                }, {
+                    time: '18:00',
+                    label: '已开抢'
+                }, {
+                    time: '20:00',
+                    label: '已开抢'
+                }, {
+                    time: '22:00',
+                    label: '已开抢'
+                }, {
+                    time: '24:00',
+                    label: '已开抢'
+                }, {
+                    time: '08:00',
+                    label: ''
+                }, {
+                    time: '10:00',
+                    label: ''
+                }, {
+                    time: '12:00',
+                    label: ''
+                }, {
+                    time: '14:00',
+                    label: ''
+                }, {
+                    time: '16:00',
+                    label: ''
+                }, {
+                    time: '18:00',
+                    label: ''
+                }, {
+                    time: '20:00',
+                    label: ''
+                }, {
+                    time: '22:00',
+                    label: ''
+                }, {
+                    time: '24:00',
+                    label: ''
+                }, {
+                    time: '08:00',
+                    label: '即将开抢'
+                }, {
+                    time: '10:00',
+                    label: '即将开抢'
+                }, {
+                    time: '12:00',
+                    label: '即将开抢'
+                }
+            ],
+            list: [],
+            filter: {
+                page_num: 1,
+                start_time: '',
+                end_time: '',
+            },
+            currentDate: new Date()
         }
     },
+    mounted () {
+        this.init();
+    },
+    created () {
+        this.init();
+    },
     methods: {
-        onLoad() {
+        init(){
+            let currentDate = this.currentDate;
+            let hours = this.currentDate.getHours();
+            let minutes = currentDate.getMinutes();
 
+            this.timeNodes.forEach((item, index) => {
+                if (item.label == '') {
+                    // 数组里的时间小于当前时间时
+                    if (item.time < moment(currentDate).format('HH:00')) {
+                        this.timeNodes[index].label = '已开抢';
+                    } else if (item.time > moment(currentDate).format('HH:00')) {  // 数组里的时间大于当前时间时
+                        this.timeNodes[index].label = '即将开抢';
+                    } else if (item.time == moment(currentDate).format('HH:00') || item.time == moment(currentDate.getTime() - 1*60*60*1000).format('HH:00')) {
+                        // 数组里的时间等于当前时间时 或者 当前时间的后一个小时时为抢购中
+                        this.timeNodes[index].label = '抢购中';
+                    }
+                }
+            });
+
+
+            // if (minutes < 59) {
+            //     this.filter.start_time = moment(currentDate).format('YYYY-MM-DD HH:00:00');
+            //     this.filter.end_time = moment(currentDate.getTime() + 1*60*60*1000).format('YYYY-MM-DD HH:00:00');
+
+            //     let startH = moment(currentDate.getTime() - 1*60*60*1000).format('HH:00');
+            //     let endH = moment(currentDate).format('HH:00');
+            //     console.log(startH, endH)
+            //     this.timeNodes.forEach((ele, index) => {
+            //         if (ele.label == '抢购中' && (startH == ele.time || endH == ele.time)) {
+            //             this.active = index;
+            //         }
+            //     });
+            // }
+
+
+        },
+        toSrollTop(){
+            document.documentElement.scrollTop = document.body.scrollTop = 0;
+            return ;
+        },
+        link(id) {
+            if (this.$route.query) {
+                this.$router.push({ 
+                    path: 'detail', 
+                    query: { 
+                        user_id: this.$route.query.user_id,
+                        item_id: id,
+                    }
+                })
+            }
+        },
+        getSale(index) {
+            console.log(index)
+        },
+        onLoad(params = {}) {
+            Object.assign(this.filter, params);
+            /*
+                查询条件
+                page_num：翻页，可补充，默认是1
+                page_size：每页多少条数据，可不传，默认20
+                start_time: 开团时间开始(注：开始和结束时间，都仅针对start_time限定)
+                end_time: 开团时间结束(注：开始和结束时间，都仅针对start_time限定)
+            */
+           if (this.flag) {
+                this.toSrollTop();
+            }
+           $.ajax(this.$host.http_api + '/mall_tqg/query_list', {
+               data: {
+                   page_num: this.flag ? 1 : this.filter.page_num,
+                   page_size: 20,
+                   start_time: this.filter.start_time,
+                   end_time: this.filter.end_time
+               },
+               dataType: 'jsonp',
+               crossDomain: true,
+               success: ((res) => {
+                   if (res.data) {
+                       let data = res.data;
+                       if (data && data.list) {
+                            if (!this.flag) {
+                                this.list =  this.list.concat(data.list);
+                                this.filter.page_num++;
+                                
+                            } else {
+                                this.list = data.list;
+                                this.filter.page_num = 2;
+                                this.flag = false;
+                            }
+
+                            // 加载状态结束
+                            this.dataLoading = false;
+                            this.$eventHub.$emit('loading', false);
+                            
+                        }
+
+                        // 再去请求是否有数据
+                        if (this.list.length >= data.total) {
+                            this.finished = true;
+                        }
+                   }
+               })
+           })
         }
     }
 }
@@ -86,11 +261,11 @@ export default {
             padding-top: 46px;
 
             /deep/ .van-tabs--line {
-                padding-top: 1.2rem;
+                padding-top: 1rem;
             }
 
             /deep/ .van-tabs__wrap {
-                height: 1.2rem;
+                height: 1rem;
                 .van-tabs__nav {
                     align-items: center;
                     padding: 0 .1rem;
@@ -99,23 +274,26 @@ export default {
 
                 .van-tabs__line {
                     background-color: initial;
+                    bottom: 0;
                 }
 
                 .van-tab {
                     background-color: initial;
                     color: #fff;
-                    flex-basis: 20%;
+                    flex-basis: 20%!important;
 
                     span {
-                        line-height: .4rem;
+                        line-height: .34rem;
+                        font-size: .24rem;
 
                         &.time {
-                            font-size: .38rem;
+                            font-size: .34rem;
+                            margin-bottom: 0.05rem;
                         }
                     }
 
                     &.van-tab--active {
-                        padding: .1rem 0;
+                        padding: 0.05rem 0;
                         background-color: #fff;
                         color: #ff7422;
                         border-radius: 4px;

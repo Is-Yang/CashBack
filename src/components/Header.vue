@@ -2,7 +2,9 @@
     <div id="header">
         <van-nav-bar 
             left-arrow :title="title" 
-            @click-left="onClickLeft">
+            @click-left="onClickLeft"
+            @click-right="onHome"
+            :class="posFixed ? 'fixed-nav-bar' : ''">
             <van-icon name="wap-home" slot="right" />
         </van-nav-bar>
     </div>
@@ -10,18 +12,25 @@
 
 <script>
 export default {
-    props: ['title'],
+    /*
+        title: 标题
+        posFixed: 是否定位，(true, false)
+    */
+    props: ['title', 'posFixed'],
     methods: {
         onClickLeft() {
             this.$router.back()
         },
+        onHome() {
+            this.$router.push("/index")
+        }
     }
 }
 </script>
 
 <style lang="less" scoped>
 #header {
-    /deep/ .van-nav-bar {
+    /deep/ .fixed-nav-bar {
         position: fixed;
         left: 0;
         right: 0;
