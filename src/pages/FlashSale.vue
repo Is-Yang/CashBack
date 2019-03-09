@@ -18,7 +18,7 @@
                         <van-cell v-for="(item, index) in list" :key="index">
                             <van-row type="flex" @click.native="link(item.num_iid)">
                                 <van-col class="product-img">
-                                    <img :src="item.pic_url" v-lazy="item.pic_url" />
+                                    <img :src="item.pict_url" v-lazy="item.pict_url" />
                                 </van-col>
                                 <van-col offset="1" class="product-content">
                                     <div class="product-info">
@@ -29,8 +29,8 @@
                                         </van-row>
                                         <van-row type="flex" justify="space-between">
                                             <van-col>
-                                                <span class="price" v-if="item.zk_final_price">{{'￥' + item.zk_final_price}}</span>
-                                                <span>天猫价：{{'￥' + item.reserve_price}}</span>
+                                                <span class="price" v-if="item.zk_final_price">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
+                                                <span>{{item.user_type == 1 ? '天猫价' : '淘宝价'}}：{{'￥' + item.zk_final_price}}</span>
                                             </van-col>
                                             <van-col>月销：{{item.volume}}</van-col>
                                         </van-row>
@@ -42,7 +42,7 @@
                                     <div class="item-foot">
                                         <van-row type="flex" justify="space-between">
                                             <van-col>
-                                                <div class="item-coupon" v-if="item.coupon_amount != 0">
+                                                <div class="item-coupon" v-if="item.coupon_amount && item.coupon_amount != 0">
                                                     券 &nbsp;
                                                     {{'￥' + item.coupon_amount}}
                                                 </div>
@@ -74,77 +74,96 @@ export default {
             timeNodes: [
                 {
                     time: '12:00',
-                    label: '已开抢'
+                    label: '已开抢',
+                    flag: 1
                 }, {
                     time: '14:00',
-                    label: '已开抢'
+                    label: '已开抢',
+                    flag: 1
                 }, {
                     time: '16:00',
-                    label: '已开抢'
+                    label: '已开抢',
+                    flag: 1
                 }, {
                     time: '18:00',
-                    label: '已开抢'
+                    label: '已开抢',
+                    flag: 1
                 }, {
                     time: '20:00',
-                    label: '已开抢'
+                    label: '已开抢',
+                    flag: 1
                 }, {
                     time: '22:00',
-                    label: '已开抢'
+                    label: '已开抢',
+                    flag: 1
                 }, {
-                    time: '24:00',
-                    label: '已开抢'
+                    time: '00:00',
+                    label: '',
+                    flag: 2
                 }, {
                     time: '08:00',
-                    label: ''
+                    label: '',
+                    flag: 2
                 }, {
                     time: '10:00',
-                    label: ''
+                    label: '',
+                    flag: 2
                 }, {
                     time: '12:00',
-                    label: ''
+                    label: '',
+                    flag: 2
                 }, {
                     time: '14:00',
-                    label: ''
+                    label: '',
+                    flag: 2
                 }, {
                     time: '16:00',
-                    label: ''
+                    label: '',
+                    flag: 2
                 }, {
                     time: '18:00',
-                    label: ''
+                    label: '',
+                    flag: 2
                 }, {
                     time: '20:00',
-                    label: ''
+                    label: '',
+                    flag: 2
                 }, {
                     time: '22:00',
-                    label: ''
+                    label: '',
+                    flag: 2
                 }, {
-                    time: '24:00',
-                    label: ''
+                    time: '00:00',
+                    label: '即将开抢',
+                    flag: 3
                 }, {
                     time: '08:00',
-                    label: '即将开抢'
+                    label: '即将开抢',
+                    flag: 3
                 }, {
                     time: '10:00',
-                    label: '即将开抢'
+                    label: '即将开抢',
+                    flag: 3
                 }, {
                     time: '12:00',
-                    label: '即将开抢'
+                    label: '即将开抢',
+                    flag: 3
                 }
             ],
             list: [],
             filter: {
                 page_num: 1,
-                start_time: '',
-                end_time: '',
+                start_time: new Date(),
+                end_time: new Date()
             },
             currentDate: new Date()
         }
     },
     mounted () {
-        this.init();
     },
     created () {
         this.init();
+        
     },
     methods: {
         init(){
@@ -154,34 +173,49 @@ export default {
 
             this.timeNodes.forEach((item, index) => {
                 if (item.label == '') {
-                    // 数组里的时间小于当前时间时
+                    // 数组里的时间小于当前时间时 比如 12:00 < 13:00 已开抢的
                     if (item.time < moment(currentDate).format('HH:00')) {
                         this.timeNodes[index].label = '已开抢';
-                    } else if (item.time > moment(currentDate).format('HH:00')) {  // 数组里的时间大于当前时间时
+                        /*
+                            如果为13:00，由于设置的值是2小时累加，找不到13:00，则当前时间也是定位在12:00 
+                        */
+                        if (item.time == moment(currentDate.getTime() - 1*60*60*1000).format('HH:00')) {
+                            this.timeNodes[index].label = '抢购中';
+                            this.active = index;
+                            setTimeout(() => {
+                                this.toSrollLeft(index);
+                            }, 100);
+                        }
+                    } else if (item.time > moment(currentDate).format('HH:00')) {   // 还没到时间点的，则即将开抢
                         this.timeNodes[index].label = '即将开抢';
-                    } else if (item.time == moment(currentDate).format('HH:00') || item.time == moment(currentDate.getTime() - 1*60*60*1000).format('HH:00')) {
-                        // 数组里的时间等于当前时间时 或者 当前时间的后一个小时时为抢购中
+                    } else if (item.time == moment(currentDate).format('HH:00')) {  // 如果值与当前时间相等则是抢购中
                         this.timeNodes[index].label = '抢购中';
+                        this.active = index;
+                         setTimeout(() => {
+                            this.toSrollLeft(index);
+                        }, 100);
                     }
+
+                    // 00 ~ 07时为抢购中
+                    const sevenTime = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00"];
+                    sevenTime.forEach(ele => {
+                        if (ele == moment(currentDate).format('HH:00')) {
+                            this.timeNodes[index].label = '抢购中';
+                            this.active = index;
+                            setTimeout(() => {
+                                this.toSrollLeft(index);
+                            }, 100);
+                        }
+                    });
                 }
             });
-
-
-            // if (minutes < 59) {
-            //     this.filter.start_time = moment(currentDate).format('YYYY-MM-DD HH:00:00');
-            //     this.filter.end_time = moment(currentDate.getTime() + 1*60*60*1000).format('YYYY-MM-DD HH:00:00');
-
-            //     let startH = moment(currentDate.getTime() - 1*60*60*1000).format('HH:00');
-            //     let endH = moment(currentDate).format('HH:00');
-            //     console.log(startH, endH)
-            //     this.timeNodes.forEach((ele, index) => {
-            //         if (ele.label == '抢购中' && (startH == ele.time || endH == ele.time)) {
-            //             this.active = index;
-            //         }
-            //     });
-            // }
-
-
+        },
+        // 设置tab导航栏加载上来选中时展示在中间
+        toSrollLeft(index) {
+            let tabNav = document.getElementsByClassName("van-tabs__nav")[0];
+            let tabItemW = document.getElementsByClassName("van-tab")[0];
+            // 如果索引大于3，则-2定位在中间
+            tabNav.scrollLeft = tabItemW.clientWidth * (index - (index > 3 ? 2 : 0));
         },
         toSrollTop(){
             document.documentElement.scrollTop = document.body.scrollTop = 0;
@@ -199,7 +233,30 @@ export default {
             }
         },
         getSale(index) {
-            console.log(index)
+            this.flag = true;
+            this.$eventHub.$emit('loading', true);
+            let start =  this.timeNodes[index];
+            let end = this.timeNodes[index + 1] ? this.timeNodes[index + 1] : this.timeNodes[index];
+
+            let day = "";
+
+            if (end.flag == 1) {  // 前一天
+                day =  moment(this.currentDate.getTime() - 24*60*60*1000).format('YYYY-MM-DD');
+            } else if (end.flag == 2) {  // 今天
+                day = moment(this.currentDate).format('YYYY-MM-DD');
+            } else if (end.flag == 3) {  // 明天
+                day =  moment(this.currentDate.getTime() + 24*60*60*1000).format('YYYY-MM-DD');
+            }
+
+            this.filter.start_time = moment(day.toString() + " " + start.time.toString()).format('YYYY-MM-DD HH:00');
+
+             // 最后一个时间点 12点~14点
+            if(index + 1 == this.timeNodes.length) {
+                this.filter.end_time = moment(day.toString() + " " + "14:00".toString()).format('YYYY-MM-DD HH:00');
+            } else {
+                this.filter.end_time = moment(day.toString() + " " + end.time.toString()).format('YYYY-MM-DD HH:00');
+            }
+            this.onLoad(this.filter);
         },
         onLoad(params = {}) {
             Object.assign(this.filter, params);
@@ -210,15 +267,21 @@ export default {
                 start_time: 开团时间开始(注：开始和结束时间，都仅针对start_time限定)
                 end_time: 开团时间结束(注：开始和结束时间，都仅针对start_time限定)
             */
-           if (this.flag) {
+
+
+            if (this.flag) {
                 this.toSrollTop();
             }
-           $.ajax(this.$host.http_api + '/mall_tqg/query_list', {
+
+            let startTime = moment(this.filter.start_time).format("YYYY-MM-DD HH:00");
+            let endTime = moment(this.filter.end_time).format("YYYY-MM-DD HH:00");
+
+            $.ajax(this.$host.http_api + '/mall_tqg/query_list', {
                data: {
                    page_num: this.flag ? 1 : this.filter.page_num,
                    page_size: 20,
-                   start_time: this.filter.start_time,
-                   end_time: this.filter.end_time
+                   start_time: startTime,
+                   end_time: endTime
                },
                dataType: 'jsonp',
                crossDomain: true,
@@ -229,7 +292,6 @@ export default {
                             if (!this.flag) {
                                 this.list =  this.list.concat(data.list);
                                 this.filter.page_num++;
-                                
                             } else {
                                 this.list = data.list;
                                 this.filter.page_num = 2;
@@ -265,11 +327,13 @@ export default {
             }
 
             /deep/ .van-tabs__wrap {
+                padding: 0 .1rem;
+                background-image: -webkit-linear-gradient(0deg, #ff7422, #ff4760); 
                 height: 1rem;
+
                 .van-tabs__nav {
                     align-items: center;
-                    padding: 0 .1rem;
-                    background-image: -webkit-linear-gradient(0deg, #ff7422, #ff4760); 
+                   background-color: initial;
                 }
 
                 .van-tabs__line {
@@ -413,6 +477,7 @@ export default {
             padding: 0 3%;
             margin-top: 0.05rem;
             border: 1px solid #fb3940;
+            background-color: #fb3940;
             color: #fff;
             border-radius: 25px;
             font-size: .24rem;
@@ -421,7 +486,7 @@ export default {
         .sale-progress .progress-tip {
             position: absolute;
             left: 0;
-            background-color: #fb3940;
+            background-color: #ff7224;
             height: 100%;
             border-radius: 25px;
             z-index: -1;

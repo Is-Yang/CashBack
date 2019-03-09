@@ -101,12 +101,12 @@ img {
 
 .taobao{
     background: url('../img/bigtaobao@3x.png') no-repeat left center;
-    background-size: cover;
+    background-size: contain;
 }
 
 .tmall{
     background: url('../img/bigtmall@3x.png') no-repeat left center;
-    background-size: cover;
+    background-size: contain;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -141,7 +141,7 @@ img {
 }
 
 .shareMask {
-    position: absolute;
+    position: fixed;
     top: 0;
     right: 0;
     left: 0;

@@ -44,7 +44,8 @@
 
             <!-- 图文详情 -->
             <div class="details-img">
-                <img :src="img" v-for="(img, index) in productDetail.imgeText" :key="index" />
+                <img v-for="(img, index) in productDetail.imgeText" :key="index"
+                    :src="img" v-lazy="img" />
             </div>
         </div>
 

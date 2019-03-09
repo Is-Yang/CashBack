@@ -1,97 +1,100 @@
 <template>
-    <div id="productList">
-        <div class="head-wrap">
-            <van-nav-bar left-arrow v-if="catId == ''" @click-left="onClickLeft">
-                <form action="/" slot="title">
-                    <van-search slot="title" v-model="paramsScreen.keywords" placeholder="请输入关键词" 
-                        @search="onSearch">
-                    </van-search>
-                </form>
-                <!-- <div slot="right" @click="onSearch">搜索</div> -->
-            </van-nav-bar>
+    <div>
+        <div id="productList" v-show="!isSearch">
+            <div class="head-wrap">
+                <van-nav-bar left-arrow v-if="catId == ''" @click-left="onClickLeft">
+                    <form action="/" slot="title">
+                        <van-search slot="title" v-model="paramsScreen.keywords" placeholder="请输入关键词" 
+                            @focus="onFocus">
+                        </van-search>
+                    </form>
+                    <!-- <div slot="right" @click="onSearch">搜索</div> -->
+                </van-nav-bar>
 
-            <Header :title="catName" v-if="catId != ''"></Header>
+                <Header :title="catName" v-if="catId != ''"></Header>
 
-            <div class="product-screen">
-                <div class="van-hairline--bottom">
-                    <van-row type="flex" justify="space-between" class="nav-screen">
-                        <van-col v-for="(item, index) in navScreen" :key="index" :class="{active:index==isNavActive}">
-                            <!-- 类型列表时不显示全球购 -->
-                            <div @click="onNavScreen(item.value)" v-if="catId != '' && item.value != 2">{{item.label}}</div>
-                            <!-- 商品列表搜索时 -->
-                            <div @click="onNavScreen(item.value)" v-if="catId == ''">{{item.label}}</div>
+                <div class="product-screen">
+                    <div class="van-hairline--bottom">
+                        <van-row type="flex" justify="space-between" class="nav-screen">
+                            <van-col v-for="(item, index) in navScreen" :key="index" :class="{active:index==isNavActive}">
+                                <!-- 类型列表时不显示全球购 -->
+                                <div @click="onNavScreen(item.value)" v-if="catId != '' && item.value != 2">{{item.label}}</div>
+                                <!-- 商品列表搜索时 -->
+                                <div @click="onNavScreen(item.value)" v-if="catId == ''">{{item.label}}</div>
+                            </van-col>
+                        </van-row>
+                    </div>
+
+                    <van-row type="flex" justify="space-between" class="screen-list">
+                        <van-col class="screen-item" v-for="(item, index) in screen" :key="item.value" @click.native="onScreen(item.value)"
+                            :class="{'active':index==isActive}">
+                            <div v-if="item.value == 2 || item.value == 3" 
+                                :class="(isSort == 1 && item.value == sortType) ? 'icon-sort' : (isSort == 2 && item.value == sortType) ? 'icon-drop' : ''" 
+                                @click="sortScreen(isSort, item.value)">
+                                {{item.label}}
+                            </div>
+                            <div v-if="item.value != 2 && item.value != 3">
+                                {{item.label}}
+                            </div>
                         </van-col>
                     </van-row>
+
+                    <van-cell-group>
+                        <van-switch-cell v-model="paramsScreen.checked" @input="onSearch" active-color="#ff611b" title="仅显示优惠券商品" />
+                    </van-cell-group>
                 </div>
-
-                <van-row type="flex" justify="space-between" class="screen-list">
-                    <van-col class="screen-item" v-for="(item, index) in screen" :key="item.value" @click.native="onScreen(item.value)"
-                        :class="{'active':index==isActive}">
-                        <div v-if="item.value == 2 || item.value == 3" 
-                            :class="(isSort == 1 && item.value == sortType) ? 'icon-sort' : (isSort == 2 && item.value == sortType) ? 'icon-drop' : ''" 
-                            @click="sortScreen(isSort, item.value)">
-                            {{item.label}}
-                        </div>
-                        <div v-if="item.value != 2 && item.value != 3">
-                            {{item.label}}
-                        </div>
-                    </van-col>
-                </van-row>
-
-                <van-cell-group>
-                    <van-switch-cell v-model="paramsScreen.checked" @input="onSearch" active-color="#ff611b" title="仅显示优惠券商品" />
-                </van-cell-group>
             </div>
-        </div>
 
-        <van-list class="list-wrap" 
-            v-model="dataLoading" 
-            :finished="finished" 
-            finished-text="已到达最底" 
-            @load="onLoad">
-            <van-cell v-for="(item, index) in list" :key="index">
-                <van-row type="flex" @click.native="link(item.num_iid)">
-                    <van-col class="product-img">
-                        <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" />
-                        <!-- <div class="discounts" v-if="item.coupon_info">
-                            <span>{{item.coupon_info}}</span>
-                        </div> -->
-                    </van-col>
-                    <van-col offset="1" class="product-content">
-                        <div class="product-info">
-                            <van-row type="flex" class="product-tit">
-                                <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type == 0"></van-col>
-                                <van-col class="icon-coupon tmall icon-coupon-list" v-if="item.user_type == 1"></van-col>
-                                <van-col>{{item.title}}</van-col>
-                            </van-row>
-                            <van-row type="flex" justify="space-between">
-                                <van-col>
-                                    <span class="price">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
-                                    <span>
-                                        {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：{{'￥' + item.zk_final_price}}
-                                    </span>
-                                </van-col>
-                                <van-col>月销：{{item.volume}}</van-col>
-                            </van-row>
-                            <p class="shop">{{item.shop_title}}</p>
-                        </div>
-                        <div class="item-foot">
-                            <van-row type="flex" justify="space-between">
-                                <van-col>
-                                    <div class="item-coupon" v-if="item.coupon_amount && item.coupon_amount != 0">
-                                        券 &nbsp;
-                                        {{'￥' + item.coupon_amount}}
-                                    </div>
-                                </van-col>
-                                <van-col v-if="item.coupon_income">
-                                    <div class="earnings">预估收益：{{'￥' + item.coupon_income}}</div>
-                                </van-col>
-                            </van-row>
-                        </div>
-                    </van-col>
-                </van-row>
-            </van-cell>
-        </van-list>
+            <van-list class="list-wrap" 
+                v-model="dataLoading" 
+                :finished="finished" 
+                finished-text="已到达最底" 
+                @load="onLoad">
+                <van-cell v-for="(item, index) in list" :key="index">
+                    <van-row type="flex" @click.native="link(item.num_iid)">
+                        <van-col class="product-img">
+                            <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" />
+                            <!-- <div class="discounts" v-if="item.coupon_info">
+                                <span>{{item.coupon_info}}</span>
+                            </div> -->
+                        </van-col>
+                        <van-col offset="1" class="product-content">
+                            <div class="product-info">
+                                <van-row type="flex" class="product-tit">
+                                    <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type == 0"></van-col>
+                                    <van-col class="icon-coupon tmall icon-coupon-list" v-if="item.user_type == 1"></van-col>
+                                    <van-col>{{item.title}}</van-col>
+                                </van-row>
+                                <van-row type="flex" justify="space-between">
+                                    <van-col>
+                                        <span class="price">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
+                                        <span>
+                                            {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：{{'￥' + item.zk_final_price}}
+                                        </span>
+                                    </van-col>
+                                    <van-col>月销：{{item.volume}}</van-col>
+                                </van-row>
+                                <p class="shop">{{item.shop_title}}</p>
+                            </div>
+                            <div class="item-foot">
+                                <van-row type="flex" justify="space-between">
+                                    <van-col>
+                                        <div class="item-coupon" v-if="item.coupon_amount && item.coupon_amount != 0">
+                                            券 &nbsp;
+                                            {{'￥' + item.coupon_amount}}
+                                        </div>
+                                    </van-col>
+                                    <van-col v-if="item.coupon_income">
+                                        <div class="earnings">预估收益：{{'￥' + item.coupon_income}}</div>
+                                    </van-col>
+                                </van-row>
+                            </div>
+                        </van-col>
+                    </van-row>
+                </van-cell>
+            </van-list>
+        </div>
+        <Search v-show="isSearch" />
     </div>
 </template>
 
@@ -106,6 +109,7 @@
                 isSort: '',
                 sortType: '',
                 list: [],
+                isSearch: false,
                 dataLoading: false,
                 finished: false,
                 flag: false,
@@ -155,19 +159,29 @@
             window.addEventListener('resize', this.handleResize);
         },
         created() {
+            this.$eventHub.$on('cancel', (data)=> {
+                this.isSearch = false;
+            });
             this.init();
             setTimeout(() => {
                 this.handleResize();
             }, 100);
         },
-        // watch: {
-        //     '$route' (to, form) {
-        //         this.init();
-        //         this.flag = true;
-        //         console.log(this.paramsScreen)
-        //         this.onLoad();
-        //     }
-        // },
+        watch: {
+            '$route' (to, form) {
+                // this.init();
+                // this.flag = true;
+                // console.log(this.paramsScreen)
+                // this.onLoad();
+                console.log(this.$route);
+                let route = this.$route;
+                // 搜索时
+                if (route.query && route.query.keyword || 
+                    route.path == '/classify' || route.path == '/list') {
+                    this.reload();
+                }
+            }
+        },
         methods: {
             init() {
                 let route = this.$route;
@@ -331,6 +345,9 @@
                 this.flag = true;
                 this.$eventHub.$emit('loading', true);
                 this.onLoad(this.paramsScreen);
+            },
+            onFocus() {
+                this.isSearch = true;
             },
             onSearch() {
                 this.flag = true;

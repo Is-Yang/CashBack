@@ -19,39 +19,24 @@
                     <van-col v-for="item in hotList" :key="item.id" @click.native="onRusult(item.keyword)">{{item.keyword}}</van-col>
                 </van-row>
             </div>
-            <div class="history">
+            <div class="history" v-if="historyList && historyList.length > 0">
                 <h3>
                     <van-row type="flex" justify="space-between">
                         <van-col>
                             <van-icon name="clock-o" />
                             搜索历史
                         </van-col>
-                        <van-col>清空</van-col>
+                        <van-col @click.native="reset">清空</van-col>
                     </van-row>
                 </h3>
 
                 <div class="list-item">
-                    <van-row type="flex" justify="space-between">
-                        <van-col>
-                            搜索内容啥啥啥xx
+                    <van-row type="flex" justify="space-between" 
+                        v-for="(item, index) in historyList" :key="index">
+                        <van-col @click.native="onRusult(item.title)">
+                            {{item.title}}
                         </van-col>
-                        <van-col>
-                            <van-icon name="cross" />
-                        </van-col>
-                    </van-row>
-                    <van-row type="flex" justify="space-between">
-                        <van-col>
-                            搜索内容啥啥啥2
-                        </van-col>
-                        <van-col>
-                            <van-icon name="cross" />
-                        </van-col>
-                    </van-row>
-                    <van-row type="flex" justify="space-between">
-                        <van-col>
-                            搜索内容啥啥啥d
-                        </van-col>
-                        <van-col>
+                        <van-col @click.native="removeData(index)">
                             <van-icon name="cross" />
                         </van-col>
                     </van-row>
@@ -60,7 +45,7 @@
         </div>
 
         <div v-if="isResult" class="search-result">
-            <van-row type="flex" justify="space-between" v-for="item in resultList" :key="item[1]" @click.native="onRusult(item[0])">
+            <van-row type="flex" justify="space-between" v-for="(item, index) in resultList" :key="index" @click.native="onRusult(item[0])">
                 <van-col>
                     {{item[0]}}
                 </van-col>
@@ -84,6 +69,9 @@
                 }
             }
         },
+        mounted() {
+            this.getHistory();
+        },
         created() {
             this.getHot();
         },
@@ -102,6 +90,31 @@
 
                     })
                 })
+            },
+            getHistory() {   // 获取历史数据
+                let history = JSON.parse(localStorage.getItem("history"));
+                if (history){  
+                    // 数组去重
+                    let result = [];
+                    const hash = {};
+                    history.forEach((item, index) => {
+                        const ele = history[index].title;
+                        if (!hash[ele]) {
+                            result.push(history[index]);
+                            hash[ele] = true;
+                        }
+                    });
+                    
+                    this.historyList = result;
+                }
+            },
+            removeData(key) {
+                this.historyList.splice(key, 1);
+                localStorage.setItem("history", JSON.stringify(this.historyList));
+            },
+            reset() {
+                this.historyList = [];
+                localStorage.setItem("history", JSON.stringify(this.historyList));
             },
             onCancel() {
                 this.$eventHub.$emit('cancel', true);
@@ -129,7 +142,12 @@
                     })
                 }
             },
-            onRusult(keyword) {  // 条状到列表页
+            onRusult(keyword) {  // 跳转到列表页
+                this.historyList.push({
+                    title: keyword
+                })
+                localStorage.setItem("history", JSON.stringify(this.historyList));
+
                 this.$router.push({
                     path: 'list',
                     query: {
