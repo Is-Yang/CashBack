@@ -34,7 +34,7 @@ export default {
         position: fixed;
         left: 0;
         right: 0;
-        z-index: 1;
+        z-index: 99 !important;
     }
 
     /deep/ .van-nav-bar__title {

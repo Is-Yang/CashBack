@@ -1,16 +1,17 @@
 <template>
     <div id="index">
-        <div class="main-wrapper" v-show="!isSearch">
+        <div class="main-wrapper" v-if="!isSearch">
             <div class="main-head">
                 <div class="search-wrap">
                     <van-search slot="title" placeholder="粘贴宝贝标题或地址，搜索优惠劵" @focus="onFocus"></van-search>
                 </div>
 
                 <van-swipe :autoplay="3000" indicator-color="white">
-                    <van-swipe-item>1</van-swipe-item>
-                    <van-swipe-item>2</van-swipe-item>
-                    <van-swipe-item>3</van-swipe-item>
-                    <van-swipe-item>4</van-swipe-item>
+                    <van-swipe-item>
+                        <router-link :to="{ path: '/list', query: { keyword: '三只松鼠', user_id: user_id }}">
+                            <img src="../assets/img/brand01.jpg" />
+                        </router-link>
+                    </van-swipe-item>
                 </van-swipe>
             </div>
 
@@ -91,42 +92,44 @@
                 <van-list class="list-wrap" 
                     v-model="dataLoading" 
                     :finished="finished" 
-                    finished-text="已到达最底" 
+                    :finished-text="finishedText"
                     @load="onLoad">
-                    <van-row type="flex" justify="space-between" gutter="5">
-                        <van-col span="12" v-for="item in list" :key="item.id" @click.native="link(item.num_iid)">
-                            <div class="product">
-                                <div class="coupon-price">
-                                    <span class="icon-coupon" v-if="item.coupon_money">￥{{item.coupon_money}}</span>
+                        <van-row type="flex" justify="space-between">
+                            <van-col span="12" v-for="item in list" :key="item.id" @click.native="link(item.num_iid)">
+                                <div class="product">
+                                    <div class="coupon-price">
+                                        <span class="icon-coupon" v-if="item.coupon_money && item.coupon_money != 0">￥{{item.coupon_money}}</span>
+                                    </div>
+                                    <div class="img">
+                                        <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" />
+                                    </div>
+                                    <div class="text">
+                                        <i class="taobao" v-if="item.user_type == 0"></i>
+                                        <i class="tmall" v-if="item.user_type == 1"></i>
+                                        {{item.title}}
+                                    </div>
+                                    <div class="price">
+                                        <van-row type="flex" justify="space-between">
+                                            <van-col class="txt-left">
+                                                <span class="now">￥{{(item.zk_final_price - (item.coupon_money ? item.coupon_money : 0))}}</span>
+                                                <del class="original">￥{{item.zk_final_price}}</del>
+                                            </van-col>
+                                            <van-col class="txt-right">
+                                                <span class="earnings" v-if="item.coupon_income">预计收益:￥{{item.coupon_income}}</span>
+                                                <span class="sales">月销：{{item.volume}}</span>
+                                            </van-col>
+                                        </van-row>
+                                    </div>
                                 </div>
-                                <div class="img">
-                                    <img :src="item.pict_url" />
-                                </div>
-                                <div class="text">
-                                    <i class="taobao" v-if="item.user_type == 0"></i>
-                                    <i class="tmall" v-if="item.user_type == 1"></i>
-                                    {{item.title}}
-                                </div>
-                                <div class="price">
-                                    <van-row type="flex" justify="space-between">
-                                        <van-col class="txt-left">
-                                            <span class="now">￥{{(item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
-                                            <del class="original">￥{{item.zk_final_price}}</del>
-                                        </van-col>
-                                        <van-col class="txt-right">
-                                            <span class="earnings" v-if="item.coupon_income">预计收益:￥{{item.coupon_income}}</span>
-                                            <span class="sales">月销：{{item.volume}}</span>
-                                        </van-col>
-                                    </van-row>
-                                </div>
-                            </div>
-                        </van-col>
-                    </van-row>
+                            </van-col>
+                        </van-row>
                 </van-list>
             </div>
+
+            <Footer></Footer>
         </div>
 
-        <Search v-show="isSearch" />
+        <Search v-if="isSearch" />
     </div>
 </template>
 
@@ -137,13 +140,14 @@
                 list: [],
                 dataLoading: false,
                 finished: false,
+                finishedText: '暂无数据',
                 isSearch: false,
                 page_num: 1,
                 user_id: 18
             }
         },
         mounted() {
-            window.addEventListener('resize', this.handleResize, true);
+            // window.addEventListener('resize', this.handleResize, true);
         },
         created() {
             // 用户Id
@@ -153,9 +157,9 @@
                 this.isSearch = false;
             });
 
-            setTimeout(() => {
-                this.handleResize();
-            }, 100);
+            // setTimeout(() => {
+            //     this.handleResize();
+            // }, 100);
         },
         methods: {
             onFocus() {
@@ -165,7 +169,7 @@
                 let mainHead = document.getElementsByClassName("main-head")[0];
                 let width = document.documentElement.clientWidth || document.body.clientWidth;
                 if (mainHead) {
-                    mainHead.style.height = width / 2.15 + 'px';
+                    mainHead.style.height = width / 2.5 + 'px';
                 }
             },
             link(id) {
@@ -178,10 +182,6 @@
                 })
             },
             onLoad() {
-                // 添加个背景样式
-                let body = document.getElementsByTagName('body')[0];
-                body.style.backgroundColor = '#fff';
-
                 // 请求数据
                 this.$eventHub.$emit('loading', true);
                 $.ajax(this.$host.http_api + '/mall_category_item/query_list', {
@@ -206,9 +206,12 @@
                             // 再去请求是否有数据
                             if (this.list.length >= res.data.total) {
                                 this.finished = true;
+
+                                if (this.list.length > 0) {
+                                    this.finishedText = "已到达最底";
+                                }
                             }
                         }
-
                     })
                 })
             }
@@ -218,8 +221,7 @@
 
 <style lang="less" scoped>
     #index {
-        overflow-x: hidden;
-
+        padding-bottom: 50px;
         .main-wrapper {
             .main-head {
                 position: relative;
@@ -241,7 +243,6 @@
 
                 .van-swipe {
                     height: 100%;
-                    background-color: rgb(252, 82, 96);
                 }
 
                 /deep/ .van-search .van-cell {
@@ -282,6 +283,20 @@
                     margin: .33rem 0;
                 }
 
+                /deep/ .list-wrap>div.van-row--flex {
+                    flex-wrap: wrap;
+
+                    &>.van-col {
+                        margin-bottom: .1rem;
+                        &:nth-child(even) {
+                            padding-left: 0.05rem;
+                        }
+                        &:nth-child(odd) {
+                            padding-right: 0.05rem;
+                        }
+                    }
+                }
+
                 .product {
                     background-color: #fff;
                     position: relative;
@@ -292,12 +307,14 @@
                         top: 0;
                         right: 0;
                         z-index: 1;
-                        padding: 0 0.2rem 0.1rem;
+                        min-width: 1rem;
+                        padding: 0 0.05rem 0.08rem 0.1rem;
                         background-color: #ffece3;
                         color: rgb(255, 97, 27);
                         border-radius: 4px;
 
                         .icon-coupon {
+                            width: auto;
                             height: .35rem;
                             display: block;
                             padding-left: .4rem;

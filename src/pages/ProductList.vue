@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="productList" v-show="!isSearch">
+        <div id="productList" v-if="!isSearch">
             <div class="head-wrap">
                 <van-nav-bar left-arrow v-if="catId == ''" @click-left="onClickLeft">
                     <form action="/" slot="title">
@@ -17,10 +17,7 @@
                     <div class="van-hairline--bottom">
                         <van-row type="flex" justify="space-between" class="nav-screen">
                             <van-col v-for="(item, index) in navScreen" :key="index" :class="{active:index==isNavActive}">
-                                <!-- 类型列表时不显示全球购 -->
-                                <div @click="onNavScreen(item.value)" v-if="catId != '' && item.value != 2">{{item.label}}</div>
-                                <!-- 商品列表搜索时 -->
-                                <div @click="onNavScreen(item.value)" v-if="catId == ''">{{item.label}}</div>
+                                <div @click="onNavScreen(item.value)">{{item.label}}</div>
                             </van-col>
                         </van-row>
                     </div>
@@ -48,7 +45,7 @@
             <van-list class="list-wrap" 
                 v-model="dataLoading" 
                 :finished="finished" 
-                finished-text="已到达最底" 
+                :finished-text="finishedText" 
                 @load="onLoad">
                 <van-cell v-for="(item, index) in list" :key="index">
                     <van-row type="flex" @click.native="link(item.num_iid)">
@@ -67,7 +64,8 @@
                                 </van-row>
                                 <van-row type="flex" justify="space-between">
                                     <van-col>
-                                        <span class="price">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
+                                        <span class="price" v-if="catId == ''">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
+                                        <span class="price" v-if="catId != ''">{{'￥' + (item.zk_final_price - (item.coupon_money ? item.coupon_money : 0))}}</span>
                                         <span>
                                             {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：{{'￥' + item.zk_final_price}}
                                         </span>
@@ -78,10 +76,16 @@
                             </div>
                             <div class="item-foot">
                                 <van-row type="flex" justify="space-between">
-                                    <van-col>
+                                    <van-col v-if="catId == ''">
                                         <div class="item-coupon" v-if="item.coupon_amount && item.coupon_amount != 0">
                                             券 &nbsp;
                                             {{'￥' + item.coupon_amount}}
+                                        </div>
+                                    </van-col>
+                                    <van-col v-if="catId != ''">
+                                        <div class="item-coupon" v-if="item.coupon_money && item.coupon_money != 0">
+                                            券 &nbsp;
+                                            {{'￥' + item.coupon_money}}
                                         </div>
                                     </van-col>
                                     <van-col v-if="item.coupon_income">
@@ -93,8 +97,10 @@
                     </van-row>
                 </van-cell>
             </van-list>
+
+            <Footer></Footer>
         </div>
-        <Search v-show="isSearch" />
+        <Search v-if="isSearch" />
     </div>
 </template>
 
@@ -112,6 +118,7 @@
                 isSearch: false,
                 dataLoading: false,
                 finished: false,
+                finishedText: '暂无数据',
                 flag: false,
                 catId: '',
                 catName: '',
@@ -169,11 +176,6 @@
         },
         watch: {
             '$route' (to, form) {
-                // this.init();
-                // this.flag = true;
-                // console.log(this.paramsScreen)
-                // this.onLoad();
-                console.log(this.$route);
                 let route = this.$route;
                 // 搜索时
                 if (route.query && route.query.keyword || 
@@ -273,6 +275,10 @@
                                 // 再去请求是否有数据
                                 if (this.list.length >= res.data.total) {
                                     this.finished = true;
+
+                                    if (this.list.length > 0) {
+                                        this.finishedText = "已到达最底";
+                                    }
                                 }
                             }
                         })
@@ -385,6 +391,7 @@
 
 <style lang="less">
 #productList {
+    padding-bottom: 50px;
     .head-wrap {
         position: fixed;
         top:0;

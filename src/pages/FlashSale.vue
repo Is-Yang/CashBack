@@ -3,7 +3,7 @@
         <Header title="限时抢购" :posFixed="true"></Header>
 
         <div class="tabs-content">
-            <van-tabs v-model="active" @click="getSale">
+            <van-tabs v-model="active" @click="getSale" sticky :offset-top="46">
                 <van-tab v-for="(item, index) in timeNodes" :key="index">
                     <div slot="title">
                         <span class="time">{{item.time}}</span>
@@ -13,7 +13,7 @@
                     <van-list class="list-wrap" 
                         v-model="dataLoading" 
                         :finished="finished" 
-                        finished-text="已到达最底" 
+                        :finished-text="finishedText"
                         @load="onLoad">
                         <van-cell v-for="(item, index) in list" :key="index">
                             <van-row type="flex" @click.native="link(item.num_iid)">
@@ -59,6 +59,8 @@
                 </van-tab>
             </van-tabs>
         </div>
+
+        <Footer></Footer>
     </div>
 </template>
 
@@ -70,6 +72,7 @@ export default {
             active: '',
             dataLoading: false,
             finished: false,
+            finishedText: '暂无数据',
             flag: false,
             timeNodes: [
                 {
@@ -197,16 +200,18 @@ export default {
                     }
 
                     // 00 ~ 07时为抢购中
-                    const sevenTime = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00"];
-                    sevenTime.forEach(ele => {
-                        if (ele == moment(currentDate).format('HH:00')) {
-                            this.timeNodes[index].label = '抢购中';
-                            this.active = index;
-                            setTimeout(() => {
-                                this.toSrollLeft(index);
-                            }, 100);
-                        }
-                    });
+                    if (item.time == "00:00") {
+                        const sevenTime = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00"];
+                        sevenTime.forEach(ele => {
+                            if (ele == moment(currentDate).format('HH:00')) {
+                                this.timeNodes[index].label = '抢购中';
+                                this.active = index;
+                                setTimeout(() => {
+                                    this.toSrollLeft(index);
+                                }, 100);
+                            }
+                        });
+                    }
                 }
             });
         },
@@ -258,8 +263,7 @@ export default {
             }
             this.onLoad(this.filter);
         },
-        onLoad(params = {}) {
-            Object.assign(this.filter, params);
+        onLoad() {
             /*
                 查询条件
                 page_num：翻页，可补充，默认是1
@@ -267,7 +271,6 @@ export default {
                 start_time: 开团时间开始(注：开始和结束时间，都仅针对start_time限定)
                 end_time: 开团时间结束(注：开始和结束时间，都仅针对start_time限定)
             */
-
 
             if (this.flag) {
                 this.toSrollTop();
@@ -279,7 +282,7 @@ export default {
             $.ajax(this.$host.http_api + '/mall_tqg/query_list', {
                data: {
                    page_num: this.flag ? 1 : this.filter.page_num,
-                   page_size: 20,
+                   page_size: 10,
                    start_time: startTime,
                    end_time: endTime
                },
@@ -307,6 +310,11 @@ export default {
                         // 再去请求是否有数据
                         if (this.list.length >= data.total) {
                             this.finished = true;
+                            if (this.list.length > 0) {
+                                this.finishedText = "已到达最底";
+                            }
+                        } else {
+                            this.finished = false;
                         }
                    }
                })
@@ -319,6 +327,7 @@ export default {
 
 <style lang="less" scoped>
     #flash-sale {
+        padding-bottom: 50px;
         .tabs-content {
             padding-top: 46px;
 
@@ -332,7 +341,7 @@ export default {
                 height: 1rem;
 
                 .van-tabs__nav {
-                    align-items: center;
+                   align-items: center;
                    background-color: initial;
                 }
 
@@ -367,10 +376,14 @@ export default {
         }
 
         .list-wrap {
-            .van-cell {
+            /deep/ .van-cell {
                 margin-bottom: .2rem;
                 padding: 10px;
                 cursor: pointer;
+                
+                &:first-child {
+                    margin-top: 0;
+                }
             }
 
             .product-img {

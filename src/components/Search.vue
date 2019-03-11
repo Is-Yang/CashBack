@@ -4,7 +4,7 @@
             <van-nav-bar>
                 <form action="/" slot="title">
                     <van-search slot="title" autofocus placeholder="请输入关键词" show-action v-model.trim="filter.keyword"
-                        @cancel="onCancel" @input="onKeywords"></van-search>
+                        @cancel="onCancel" @input="onKeywords" @search="onRusult(filter.keyword)"></van-search>
                 </form>
             </van-nav-bar>
         </div>
@@ -16,7 +16,9 @@
                     热门搜索
                 </h3>
                 <van-row class="list-label">
-                    <van-col v-for="item in hotList" :key="item.id" @click.native="onRusult(item.keyword)">{{item.keyword}}</van-col>
+                    <van-col v-for="item in hotList" :key="item.id" 
+                        @click.native="onRusult(item.keyword)"
+                        :style="{color: item.color}">{{item.keyword}}</van-col>
                 </van-row>
             </div>
             <div class="history" v-if="historyList && historyList.length > 0">
@@ -70,6 +72,7 @@
             }
         },
         mounted() {
+
             this.getHistory();
         },
         created() {
