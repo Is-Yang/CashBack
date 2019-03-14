@@ -147,11 +147,13 @@
 
                             let _this = this;
                             var copy_btn = document.getElementById('copy-btn');
-                            this.clipboardObject = new ClipboardJS(copy_btn, {
-                                text: function() {
-                                    return _this.tkl;
-                                }
-                            });
+                            if (copy_btn) {
+                                this.clipboardObject = new ClipboardJS(copy_btn, {
+                                    text: function() {
+                                        return _this.tkl;
+                                    }
+                                });
+                            }
                         }
                     })
                 })

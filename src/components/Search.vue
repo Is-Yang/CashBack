@@ -72,7 +72,6 @@
             }
         },
         mounted() {
-
             this.getHistory();
         },
         created() {

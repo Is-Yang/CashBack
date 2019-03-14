@@ -16,34 +16,34 @@
             </div>
 
             <!-- 分类栏目 -->
-            <div class="main-classify">
+            <div class="main-category">
                 <van-row type="flex" justify="center">
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 1, cat_name: '女装', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 1, cat_name: '女装', user_id: user_id }}">
                             <img src="../assets/img/woman.png" />
                             女装
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 2, cat_name: '男装', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 2, cat_name: '男装', user_id: user_id }}">
                             <img src="../assets/img/man.png" />
                             男装
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 3, cat_name: '数码', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 3, cat_name: '数码', user_id: user_id }}">
                             <img src="../assets/img/shuma.png" />
                             数码
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 4, cat_name: '母婴', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 4, cat_name: '母婴', user_id: user_id }}">
                             <img src="../assets/img/muying.png" />
                             母婴
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 5, cat_name: '食品', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 5, cat_name: '食品', user_id: user_id }}">
                             <img src="../assets/img/food.png" />
                             食品
                         </router-link>
@@ -51,31 +51,31 @@
                 </van-row>
                 <van-row type="flex" justify="center">
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 6, cat_name: '内衣', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 6, cat_name: '内衣', user_id: user_id }}">
                             <img src="../assets/img/nieyi.png" />
                             内衣
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 7, cat_name: '居家', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 7, cat_name: '居家', user_id: user_id }}">
                             <img src="../assets/img/jiaju.png" />
                             居家
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 8, cat_name: '美妆', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 8, cat_name: '美妆', user_id: user_id }}">
                             <img src="../assets/img/meizhuang.png" />
                             美妆
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 9, cat_name: '鞋包', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 9, cat_name: '鞋包', user_id: user_id }}">
                             <img src="../assets/img/xiebao.png" />
                             鞋包
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/classify', query: { cat_id: 10, cat_name: '运动', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 10, cat_name: '运动', user_id: user_id }}">
                             <img src="../assets/img/sport.png" />
                             运动
                         </router-link>
@@ -263,7 +263,7 @@
                 }
             }
 
-            .main-classify {
+            .main-category {
                 padding: 2% 0;
                 background-color: #fff;
 

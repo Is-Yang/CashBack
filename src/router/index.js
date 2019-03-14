@@ -23,4 +23,18 @@ const router = new Router({
     }
 })
 
+// router.afterEach((to, from) => {
+//     if (from.path == '/index' && (to.path == '/list' || to.path == '/category')) {
+//         let isRefresh = sessionStorage.getItem('isRefresh');
+//         if (isRefresh == '0') {
+//             sessionStorage.setItem('isRefresh', null);
+//             // window.location.reload();
+//         } else {
+//             sessionStorage.setItem('isRefresh', 0);
+//         }
+//     } else if ((from.path == '/list' || from.path == '/category') && to.path == '/index') {
+//         sessionStorage.setItem('isRefresh', 0);
+//     }
+// });
+
 export default router

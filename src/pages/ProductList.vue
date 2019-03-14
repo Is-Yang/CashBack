@@ -175,20 +175,48 @@
             }, 100);
         },
         watch: {
-            '$route' (to, form) {
+            '$route' (to, from) {
                 let route = this.$route;
+
                 // 搜索时
                 if (route.query && route.query.keyword || 
-                    route.path == '/classify' || route.path == '/list') {
+                    route.path == '/category' || route.path == '/list') {
                     this.reload();
                 }
+
+                if (from.path == '/index' && (to.path == '/list' || to.path == '/category')) {
+                    let isRefresh = sessionStorage.getItem('isRefresh');
+                    if (isRefresh == '0') {
+                        sessionStorage.setItem('isRefresh', null);
+                        window.location.reload();
+                    } else {
+                        sessionStorage.setItem('isRefresh', 0);
+                    }
+                } else if ((from.path == '/list' || from.path == '/category') && to.path == '/index') {
+                    sessionStorage.setItem('isRefresh', 0);
+                }
+            }
+        },
+        beforeRouteLeave (to, from, next) {
+            if (to.path == '/detail') {
+                if (!from.meta.keepAlive) {
+                    from.meta.keepAlive = true;
+                }
+                next();
+            } else if (to.path == '/index') {
+                to.meta.keepAlive = true;
+                next();
+            } else {
+                from.meta.keepAlive = false;
+                to.meta.keepAlive = false;
+                next();
             }
         },
         methods: {
             init() {
                 let route = this.$route;
                 // 分类列表
-                if (route.path == '/classify') {
+                if (route.path == '/category') {
                     if (route.query.cat_id) {
                         this.catId = route.query.cat_id;
                     }
