@@ -2,51 +2,58 @@
     <div id="productDetail">
         <Header title="商品详情" :posFixed="true"></Header>
         <div class="product-main">
-            <div class="product-images">
-                <van-swipe :autoplay="3000" indicator-color="white" v-if="productDetail.small_images.length > 0">
-                    <van-swipe-item v-for="(image, index) in productDetail.small_images" :key="index">
-                        <img :src="image" />
-                    </van-swipe-item>
-                </van-swipe>
+            <div class="product-content">
+                <div class="product-images">
+                    <van-swipe :autoplay="3000" indicator-color="white" v-if="productDetail.small_images.length > 0">
+                        <van-swipe-item v-for="(image, index) in productDetail.small_images" :key="index">
+                            <img :src="image" />
+                        </van-swipe-item>
+                    </van-swipe>
 
-                <div class="show-quan" v-if="coupon_money>0">
-                    <div>减{{coupon_money}}元</div>
-                    <div>领券</div>
+                    <div class="show-quan" v-if="coupon_money>0">
+                        <div>减{{coupon_money}}元</div>
+                        <div>领券</div>
+                    </div>
                 </div>
+
+                <van-row type="flex" justify="space-between" class="price-info">
+                    <van-col>
+                        <span class="current">￥<em>{{current_price}}</em></span>
+                        <del class="origin">￥{{productDetail['zk_final_price']}}</del>
+                    </van-col>
+                    <van-col>
+                        <span>￥{{coupon_income}}</span>
+                        <div>预估收益</div>
+                    </van-col>
+                </van-row>
+
+                <van-row type="flex" class="product-title">
+                    <van-col class="icon-coupon taobao" v-if="productDetail['user_type']==0"></van-col>
+                    <van-col class="icon-coupon tmall" v-if="productDetail['user_type']==1"></van-col>
+                    <van-col>{{productDetail.title}}</van-col>
+                </van-row>
+
+                <van-row type="flex" justify="space-between" class="reward-sales">
+                    <!-- <van-col class="reward">
+                        奖励金 x3
+                    </van-col> -->
+                    <van-col></van-col>
+                    <van-col class="sales">
+                        月销：{{productDetail['volume']}}
+                    </van-col>
+                </van-row>
+
+                <!-- 店铺 -->
+                <van-cell :title="productDetail['nick']" icon="shop-o" is-link></van-cell>
             </div>
-
-            <van-row type="flex" class="product-title">
-                <van-col class="icon-coupon taobao" v-if="productDetail['user_type']==0"></van-col>
-                <van-col class="icon-coupon tmall" v-if="productDetail['user_type']==1"></van-col>
-                <van-col>{{productDetail.title}}</van-col>
-            </van-row>
-
-            <van-row type="flex" justify="space-between" class="price-info">
-                <van-col>
-                    <span class="current">￥<em>{{current_price}}</em></span>
-                    <del class="origin">￥{{productDetail['zk_final_price']}}</del>
-                </van-col>
-                <van-col>
-                    <span>￥{{coupon_income}}</span>
-                    <div>预估收益</div>
-                </van-col>
-            </van-row>
-
-            <van-row type="flex" justify="space-between" class="reward-sales">
-                <!-- <van-col class="reward">
-                    奖励金 x3
-                </van-col> -->
-                <van-col></van-col>
-                <van-col class="sales">
-                    月销：{{productDetail['volume']}}
-                </van-col>
-            </van-row>
 
             <!-- 图文详情 -->
-            <div class="details-img">
-                <img v-for="(img, index) in productDetail.imgeText" :key="index"
-                    :src="img" v-lazy="img" />
-            </div>
+            <van-collapse v-model="activeName" accordion>
+                <van-collapse-item title="宝贝详情" name="detailsImg">
+                    <img v-for="(img, index) in imgeText" :key="index"
+                        :src="img" v-lazy="img" />
+                </van-collapse-item>
+            </van-collapse>
         </div>
 
         <van-goods-action>
@@ -76,9 +83,10 @@
                 coupon_income: '',
                 current_price: '',
                 productDetail: {
-                    small_images: [],
-                    imgeText: []
-                }
+                    small_images: []
+                },
+                activeName: 'detailsImg',
+                imgeText: []
             }
         },
         mounted() {
@@ -178,7 +186,7 @@
                     crossDomain: true,
                     success: ((res) => {
                         if (res.data) {
-                            this.productDetail.imgeText = res.data;
+                            this.imgeText = res.data;
                         }
                     })
                 })
@@ -190,7 +198,11 @@
 <style lang="less">
     #productDetail {
         height: 100%;
-        background-color: #fff;
+        .product-content {
+            background-color: #fff;
+            margin-bottom: .2rem;
+        }
+
         .product-main {
             overflow: auto;
             padding-top: 46px;
@@ -271,7 +283,7 @@
         }
 
         .reward-sales {
-            margin: .13rem 0.2rem;
+            padding: 0.13rem 0.2rem 0.3rem;
             // position: absolute;
             // left: 13px;
             // right: 13px;
