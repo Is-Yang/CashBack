@@ -6,7 +6,8 @@
                 <div class="product-images">
                     <van-swipe :autoplay="3000" indicator-color="white" v-if="productDetail.small_images.length > 0">
                         <van-swipe-item v-for="(image, index) in productDetail.small_images" :key="index">
-                            <img :src="image" />
+                            <!-- <img :src="image" /> -->
+                            <div class="figure" :style="{backgroundImage:'url(' + image + ')'}" v-lazy:background-image="image"></div>
                         </van-swipe-item>
                     </van-swipe>
 

@@ -50,7 +50,8 @@
                 <van-cell v-for="(item, index) in list" :key="index">
                     <van-row type="flex" @click.native="link(item.num_iid)">
                         <van-col class="product-img">
-                            <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" />
+                            <div class="figure" :style="{backgroundImage:'url(' + item.pict_url + ')'}" v-lazy:background-image="item.pict_url"></div>
+                            <!-- <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" /> -->
                             <!-- <div class="discounts" v-if="item.coupon_info">
                                 <span>{{item.coupon_info}}</span>
                             </div> -->
@@ -181,7 +182,7 @@
                 // 搜索时
                 if (route.query && route.query.keyword || 
                     route.path == '/category' || route.path == '/list') {
-                    this.reload();
+                    window.location.reload();
                 }
 
                 if (from.path == '/index' && (to.path == '/list' || to.path == '/category')) {
