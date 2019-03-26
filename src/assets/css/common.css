@@ -87,15 +87,11 @@ img {
 }
 .icon-coupon {
     margin-right: .1rem;
-    width: .37rem;
-    height: .26rem;
+    width: .36rem;
+    height: .36rem;
     background: url("../img/icon_quan.png") no-repeat left center;
     background-size: contain;
     margin-top: .1rem;
-}
-.icon-coupon-list{
-    width: .50rem;
-    margin-top: .03rem;
 }
 
 .icon-go {
@@ -166,6 +162,17 @@ img {
 
 .txt-left {
     text-align: left;
+}
+
+.text-line {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.26rem;
+    height: 0.75rem;
 }
 
 .figure {

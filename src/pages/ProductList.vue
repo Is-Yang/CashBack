@@ -61,12 +61,13 @@
                                 <van-row type="flex" class="product-tit">
                                     <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type == 0"></van-col>
                                     <van-col class="icon-coupon tmall icon-coupon-list" v-if="item.user_type == 1"></van-col>
-                                    <van-col>{{item.title}}</van-col>
+                                    <van-col class="text-line">{{item.title}}</van-col>
                                 </van-row>
                                 <van-row type="flex" justify="space-between">
                                     <van-col>
-                                        <span class="price" v-if="catId == ''">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
-                                        <span class="price" v-if="catId != ''">{{'￥' + (item.zk_final_price - (item.coupon_money ? item.coupon_money : 0))}}</span>
+                                        <!-- <span class="price" v-if="catId == ''">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span> -->
+                                        <!-- <span class="price" v-if="catId != ''">{{'￥' + (item.zk_final_price - (item.coupon_money ? item.coupon_money : 0))}}</span> -->
+                                        <span class="price">￥{{item.now_price ? item.now_price : 0}}</span>
                                         <span>
                                             {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：{{'￥' + item.zk_final_price}}
                                         </span>
@@ -553,7 +554,7 @@
 
         .product-tit {
             font-size: .26rem;
-            line-height: .34rem;
+            line-height: .38rem;
             margin-bottom: .1rem;
             color: rgb(13, 8, 5);
             font-weight: 600;

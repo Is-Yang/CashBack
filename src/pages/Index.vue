@@ -98,16 +98,18 @@
                             <van-col span="12" v-for="item in list" :key="item.id" @click.native="link(item.num_iid)">
                                 <div class="product">
                                     <div class="coupon-price">
-                                        <span class="icon-coupon" v-if="item.coupon_money && item.coupon_money != 0">￥{{item.coupon_money}}</span>
+                                        <!-- <span class="icon-coupon" v-if="item.coupon_money && item.coupon_money != 0">￥{{item.coupon_money}}</span> -->
+                                         <span class="icon-coupon">￥{{item.now_price ? item.now_price : 0}}</span>
                                     </div>
                                     <div class="img">
-                                        <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" />
+                                        <!-- <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" /> -->
+                                        <div class="figure" :style="{backgroundImage:'url(' + item.pict_url + ')'}" v-lazy:background-image="item.pict_url"></div>
                                     </div>
-                                    <div class="text">
-                                        <i class="taobao" v-if="item.user_type == 0"></i>
-                                        <i class="tmall" v-if="item.user_type == 1"></i>
-                                        {{item.title}}
-                                    </div>
+                                    <van-row type="flex" class="product-tit">
+                                        <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type == 0"></van-col>
+                                        <van-col class="icon-coupon tmall icon-coupon-list" v-if="item.user_type == 1"></van-col>
+                                        <van-col class="text-line">{{item.title}}</van-col>
+                                    </van-row>
                                     <div class="price">
                                         <van-row type="flex" justify="space-between">
                                             <van-col class="txt-left">
@@ -115,7 +117,7 @@
                                                 <del class="original">￥{{item.zk_final_price}}</del>
                                             </van-col>
                                             <van-col class="txt-right">
-                                                <span class="earnings" v-if="item.coupon_income">预计收益:￥{{item.coupon_income}}</span>
+                                                <span class="earnings" v-if="item.coupon_income">预估收益:￥{{item.coupon_income}}</span>
                                                 <span class="sales">月销：{{item.volume}}</span>
                                             </van-col>
                                         </van-row>
@@ -315,33 +317,20 @@
 
                         .icon-coupon {
                             width: auto;
-                            height: .35rem;
                             display: block;
                             padding-left: .4rem;
                         }
                     }
 
                     .img {
-                        height: 3.7rem;
+                        // height: 3.7rem;
                         background-color: #efefef
                     }
 
-                    .text {
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        display: -webkit-box;
-                        -webkit-box-orient: vertical;
-                        -webkit-line-clamp: 2;
+                    .product-tit {
                         font-size: .26rem;
                         margin: .12rem .18rem;
                         height: .75rem;
-
-                        &>i {
-                            width: .32rem;
-                            height: .32rem;
-                            vertical-align: middle;
-                            display: inline-block;
-                        }
                     }
 
                     .price {

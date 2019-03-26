@@ -165,6 +165,7 @@
 <style lang="less" scoped>
     .search-wrapper {
         background-color: #f5f5f9;
+        overflow-x: hidden;
 
         /deep/ .van-nav-bar__title {
             width: 100%;
@@ -263,6 +264,12 @@
                         transform: scale(.5);
                         border: 0 solid #ebedf0;
                         border-bottom-width: 1px;
+                    }
+
+                    &:last-child {
+                        ::after {
+                            border: none;
+                        }
                     }
                 }
             }

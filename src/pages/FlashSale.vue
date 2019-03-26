@@ -25,7 +25,7 @@
                                         <van-row type="flex" class="product-tit">
                                             <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type==0"></van-col>
                                             <van-col class="icon-coupon tmall icon-coupon-list" v-if="item.user_type==1"></van-col>
-                                            <van-col>{{item.title}}</van-col>
+                                            <van-col class="text-line">{{item.title}}</van-col>
                                         </van-row>
                                         <van-row type="flex" justify="space-between">
                                             <van-col>
@@ -411,7 +411,7 @@ export default {
             }
 
             .product-tit {
-                font-size: .26rem;
+                font-size: .28rem;
                 line-height: .34rem;
                 margin-bottom: .1rem;
                 color: rgb(13, 8, 5);
