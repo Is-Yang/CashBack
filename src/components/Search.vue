@@ -145,11 +145,10 @@
                 }
             },
             onRusult(keyword) {  // 跳转到列表页
-                this.historyList.push({
+                this.historyList.unshift({
                     title: keyword
-                })
+                });
                 localStorage.setItem("history", JSON.stringify(this.historyList));
-
                 this.$router.push({
                     path: 'list',
                     query: {

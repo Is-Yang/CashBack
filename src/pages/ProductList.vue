@@ -181,8 +181,8 @@
                 let route = this.$route;
 
                 // 搜索时
-                if (route.query && route.query.keyword || 
-                    route.path == '/category' || route.path == '/list') {
+                if (from.path != '/detail' && (route.query && route.query.keyword || 
+                    (route.path == '/category' || route.path == '/list'))) {
                     window.location.reload();
                 }
 

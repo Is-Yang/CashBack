@@ -114,7 +114,7 @@
                     this.itemId = this.$route.query.item_id;
 
                     let data = [];
-                    $.ajax(this.$host.http_api+'/shop/detail', {
+                        $.ajax(this.$host.http_api+'/shop/detail', {
                         data: {
                             num_iid: this.itemId
                         },
@@ -124,12 +124,12 @@
                             let result = res.data.results.n_tbk_item;
                             if (result) {
                                 this.productDetail = result;
-                                this.productDetail.small_images = result.small_images.string;
+                                this.productDetail.small_images = result.small_images.string && result.small_images.string.length > 0 ? result.small_images.string : [result.pict_url];
                             }
                             this.$eventHub.$emit('loading', false);
                         })
                     })
-                    this.getDetail();
+                        this.getDetail();
                     this.getCoupon();
                 }
             },
