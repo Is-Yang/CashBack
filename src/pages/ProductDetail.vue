@@ -102,7 +102,7 @@
         methods: {
             handleResize() {
                 let productImages = document.getElementsByClassName("product-images")[0];
-                let width = document.documentElement.clientWidth || document.body.clientWidth;
+                let width = productImages.clientWidth;
                 if (productImages) {
                     productImages.style.height = width + 'px';
                 }
