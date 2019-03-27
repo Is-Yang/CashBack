@@ -35,10 +35,10 @@
                 <div class="list-item">
                     <van-row type="flex" justify="space-between" 
                         v-for="(item, index) in historyList" :key="index">
-                        <van-col @click.native="onRusult(item.title)">
+                        <van-col class="title" @click.native="onRusult(item.title)">
                             {{item.title}}
                         </van-col>
-                        <van-col @click.native="removeData(index)">
+                        <van-col class="remove" @click.native="removeData(index)">
                             <van-icon name="cross" />
                         </van-col>
                     </van-row>
@@ -145,10 +145,12 @@
                 }
             },
             onRusult(keyword) {  // 跳转到列表页
-                this.historyList.unshift({
-                    title: keyword
-                });
-                localStorage.setItem("history", JSON.stringify(this.historyList));
+                if (keyword != '') {
+                     this.historyList.unshift({
+                        title: keyword
+                    });
+                    localStorage.setItem("history", JSON.stringify(this.historyList));
+                }
                 this.$router.push({
                     path: 'list',
                     query: {
@@ -156,6 +158,7 @@
                         keyword: keyword
                     }
                 })
+                this.$eventHub.$emit('search-ok', true);
             }
         },
     }
@@ -245,7 +248,6 @@
 
             .list-item {
                 /deep/ .van-row--flex {
-                    padding: .23rem .15rem;
                     position: relative;
 
                     ::after {
@@ -269,6 +271,14 @@
                         ::after {
                             border: none;
                         }
+                    }
+
+                    .title, .remove {
+                        padding: .23rem .15rem;
+                    }
+
+                    .title {
+                        flex : 1;
                     }
                 }
             }

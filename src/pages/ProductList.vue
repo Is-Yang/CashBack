@@ -168,6 +168,9 @@
             window.addEventListener('resize', this.handleResize);
         },
         created() {
+            this.$eventHub.$on('search-ok', (data)=> {
+                window.location.reload();
+            });
             this.$eventHub.$on('cancel', (data)=> {
                 this.isSearch = false;
             });
@@ -238,6 +241,8 @@
                 let listWrap = document.getElementsByClassName("list-wrap")[0];
                 if (headWrap) {
                     listWrap.style.marginTop = headWrap.clientHeight + 'px';
+                } else {
+                    this.handleResize();
                 }
             },
             link(id) {
@@ -522,6 +527,7 @@
     }
 
     .list-wrap {
+        margin-top: 176px;
         .van-cell {
             margin-bottom: .2rem;
             padding: 10px;
