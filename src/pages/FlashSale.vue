@@ -463,7 +463,7 @@ export default {
                         border-radius: 50%;
                         left: 40%;
                         transform: translateX(-40%);
-                        z-index: 9;
+                        z-index: inherit;
                     }
                     &::after {
                         bottom: -1px;
