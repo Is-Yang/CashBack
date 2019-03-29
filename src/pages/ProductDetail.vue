@@ -282,6 +282,12 @@
             font-weight: 600;
             >.van-col:nth-child(2) {
                 flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                height: 0.82rem;
             }
         }
 

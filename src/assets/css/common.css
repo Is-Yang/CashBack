@@ -167,10 +167,10 @@ img {
 .text-line {
     flex: 1;
     overflow: hidden;
-    text-overflow: ellipsis;
+    /* text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2; */
     font-size: 0.26rem;
     height: 0.75rem;
 }
