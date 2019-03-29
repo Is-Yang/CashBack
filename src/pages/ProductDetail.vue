@@ -19,11 +19,11 @@
 
                 <van-row type="flex" justify="space-between" class="price-info">
                     <van-col>
-                        <span class="current">￥<em>{{current_price}}</em></span>
+                        <span class="current">￥<em>{{productDetail.now_price}}</em></span>
                         <del class="origin">￥{{productDetail['zk_final_price']}}</del>
                     </van-col>
                     <van-col>
-                        <span>￥{{productDetail.now_price ? productDetail.now_price : 0}}</span>
+                        <span>￥{{coupon_income}}</span>
                         <div>预估收益</div>
                     </van-col>
                 </van-row>
