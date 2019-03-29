@@ -23,7 +23,7 @@
                         <del class="origin">￥{{productDetail['zk_final_price']}}</del>
                     </van-col>
                     <van-col>
-                        <span>￥{{coupon_income}}</span>
+                        <span>￥{{productDetail.now_price ? productDetail.now_price : 0}}</span>
                         <div>预估收益</div>
                     </van-col>
                 </van-row>
