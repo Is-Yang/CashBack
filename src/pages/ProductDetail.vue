@@ -287,7 +287,7 @@
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
-                height: 0.82rem;
+                // height: 0.82rem;
             }
         }
 

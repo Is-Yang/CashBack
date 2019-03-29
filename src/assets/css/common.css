@@ -91,7 +91,7 @@ img {
     height: .36rem;
     background: url("../img/icon_quan.png") no-repeat left center;
     background-size: contain;
-    margin-top: .1rem;
+    margin-top: 0.05rem;
 }
 
 .icon-go {
