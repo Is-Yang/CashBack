@@ -3,7 +3,7 @@
         <div class="main-wrapper" v-if="!isSearch">
             <div class="main-head">
                 <div class="search-wrap">
-                    <van-search slot="title" placeholder="粘贴宝贝标题或地址，搜索优惠劵" @focus="onFocus"></van-search>
+                    <van-search slot="title" placeholder="粘贴淘宝宝贝标题，先领券再购物" @focus="onFocus"></van-search>
                 </div>
 
                 <van-swipe :autoplay="3000" indicator-color="white">

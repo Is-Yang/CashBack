@@ -49,10 +49,15 @@
             </div>
 
             <!-- 图文详情 -->
-            <van-collapse v-model="activeName" accordion>
+            <van-collapse v-model="activeName" accordion v-if="imgeText && imgeText.length > 0">
                 <van-collapse-item title="宝贝详情" name="detailsImg">
-                    <img v-for="(img, index) in imgeText" :key="index"
-                        :src="img" v-lazy="img" />
+                    <div>
+                        <img v-for="(img, index) in imgeText" :key="index"
+                            :src="img" v-lazy="img" />
+                    </div>
+                    <!-- <div v-if="imgeText && imgeText.length == 0">
+                        <iframe id="show-iframe" frameborder="0" scrolling="auto" :src="iframeUrl"></iframe>
+                    </div> -->
                 </van-collapse-item>
             </van-collapse>
         </div>
@@ -87,11 +92,13 @@
                     small_images: []
                 },
                 activeName: 'detailsImg',
-                imgeText: []
+                imgeText: [],
+                iframeUrl: ''
             }
         },
         mounted() {
             window.addEventListener('resize', this.handleResize, true);
+            // window.addEventListener('scroll', this.detailScroll, true);
         },
         created() {
             setTimeout(() => {
@@ -99,12 +106,32 @@
             }, 100);
             this.init();
         },
+        destroyed: function () {
+            // window.removeEventListener('scroll', this.detailScroll);   //  离开页面清除（移除）滚轮滚动事件
+        },
         methods: {
+            detailScroll() {
+                let content = document.getElementsByClassName('product-content')[0];
+                let clientHeight = content.clientHeight;  
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+                let scrollHeight = scrollTop + clientHeight;
+                if (scrollTop > clientHeight && scrollTop <= (clientHeight + 50)) {
+                    document.documentElement.scrollTop = scrollHeight + 46;
+                } else {
+                }
+            },
             handleResize() {
+                // 产品主图
                 let productImages = document.getElementsByClassName("product-images")[0];
                 if (productImages) {
                     productImages.style.height = productImages.clientWidth + 'px';
                 }
+                // 产品详情图iframe
+                const oIframe = document.getElementById('show-iframe');
+                const deviceWidth = document.documentElement.clientWidth;
+                const deviceHeight = document.documentElement.clientHeight;
+                oIframe.style.width = deviceWidth + 'px';
+                oIframe.style.height = deviceHeight + 'px';
             },
             init() {
                 if (this.$route.query) {
@@ -186,7 +213,8 @@
                     crossDomain: true,
                     success: ((res) => {
                         if (res.data) {
-                            this.imgeText = res.data;
+                            this.imgeText = res.data.img_arr;
+                            this.iframeUrl = res.data.iframe_url;
                         }
                     })
                 })
