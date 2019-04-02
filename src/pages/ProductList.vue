@@ -563,7 +563,6 @@
             line-height: .38rem;
             margin-bottom: .1rem;
             color: rgb(13, 8, 5);
-            font-weight: 600;
         }
 
         .product-info {

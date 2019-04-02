@@ -331,6 +331,7 @@
                         font-size: .26rem;
                         margin: .12rem .18rem;
                         height: .75rem;
+                        color: #0d0805;
                     }
 
                     .price {

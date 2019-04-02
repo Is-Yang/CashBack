@@ -415,7 +415,6 @@ export default {
                 line-height: .34rem;
                 margin-bottom: .1rem;
                 color: rgb(13, 8, 5);
-                font-weight: 600;
             }
 
             .product-info {

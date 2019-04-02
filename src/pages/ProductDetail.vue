@@ -307,7 +307,6 @@
             padding: .2rem;
             font-size: .32rem;
             color: rgb(13, 8, 5);
-            font-weight: 600;
             >.van-col:nth-child(2) {
                 flex: 1;
                 overflow: hidden;
