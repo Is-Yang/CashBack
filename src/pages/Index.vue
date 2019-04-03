@@ -346,7 +346,7 @@
 
                         .now {
                             display: block;
-                            color: rgb(252, 82, 96);
+                            color: #fd333c;
                             font-size: .3rem;
                         }
 
