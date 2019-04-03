@@ -19,10 +19,10 @@
 
                 <van-row type="flex" justify="space-between" class="price-info">
                     <van-col>
-                        <span class="current">￥<em>{{productDetail.now_price | floatFilter}}</em></span>
-                        <del class="origin">￥{{productDetail['zk_final_price'] | floatFilter}}</del>
+                        <span class="current" v-if="productDetail.current_price">￥<em>{{productDetail.current_price | floatFilter}}</em></span>
+                        <del class="origin" v-if="productDetail['zk_final_price']">￥{{productDetail['zk_final_price'] | floatFilter}}</del>
                     </van-col>
-                    <van-col>
+                    <van-col v-if="coupon_income">
                         <span>￥{{coupon_income}}</span>
                         <div>预估收益</div>
                     </van-col>
@@ -87,9 +87,9 @@
                 buyText: '省钱购买',
                 coupon_money: 0,
                 coupon_income: '',
-                current_price: '',
                 productDetail: {
-                    small_images: []
+                    small_images: [],
+                    current_price: '',
                 },
                 activeName: 'detailsImg',
                 imgeText: [],
@@ -172,10 +172,9 @@
                         let data = res.data;
                         if (data) {
                             if(data.coupon_money) {
-                                this.coupon_money = data.coupon_money;
-                                this.current_price = this.productDetail.zk_final_price - data.coupon_money;
+                                this.productDetail.current_price = Number(data.item_price) - data.coupon_money;
                             }else{
-                                this.current_price = this.productDetail.zk_final_price;
+                                this.productDetail.current_price = Number(data.item_price);
                             }
                             this.coupon_income = data.coupon_income ? data.coupon_income:data.income;
                             this.tkl = data.tkl;
