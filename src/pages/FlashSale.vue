@@ -18,7 +18,7 @@
                         <van-cell v-for="(item, index) in list" :key="index">
                             <van-row type="flex" @click.native="link(item.num_iid)">
                                 <van-col class="product-img">
-                                    <img :src="item.pict_url" v-lazy="item.pict_url" />
+                                    <div class="figure" :style="{backgroundImage:'url(' + item.pict_url +'_240x240'+')'}" v-lazy:background-image="item.pict_url +'_240x240'"></div>
                                 </van-col>
                                 <van-col offset="1" class="product-content">
                                     <div class="product-info">
@@ -29,8 +29,10 @@
                                         </van-row>
                                         <van-row type="flex" justify="space-between">
                                             <van-col>
-                                                <span class="price" v-if="item.zk_final_price">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span>
-                                                <span>{{item.user_type == 1 ? '天猫价' : '淘宝价'}}：{{'￥' + item.zk_final_price}}</span>
+                                                <span class="price">￥{{item.now_price ? item.now_price : 0 | floatFilter}}</span>
+                                                <span>
+                                                    {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：￥{{item.zk_final_price | floatFilter}}
+                                                </span>
                                             </van-col>
                                             <van-col>月销：{{item.volume}}</van-col>
                                         </van-row>

@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="img">
                                         <!-- <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" /> -->
-                                        <div class="figure" :style="{backgroundImage:'url(' + item.pict_url + ')'}" v-lazy:background-image="item.pict_url"></div>
+                                        <div class="figure" :style="{backgroundImage:'url(' + item.pict_url + '_240x240' + ')'}" v-lazy:background-image="item.pict_url + '_240x240'"></div>
                                     </div>
                                     <van-row type="flex" class="product-tit">
                                         <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type == 0"></van-col>
@@ -113,12 +113,12 @@
                                     <div class="price">
                                         <van-row type="flex" justify="space-between">
                                             <van-col class="txt-left">
-                                                <span class="now">￥{{(item.zk_final_price - (item.coupon_money ? item.coupon_money : 0))}}</span>
-                                                <del class="original">￥{{item.zk_final_price}}</del>
+                                                <div class="now">￥{{(item.zk_final_price - (item.coupon_money ? item.coupon_money : 0 )) | floatFilter}}</div>
+                                                <del class="original">￥{{item.zk_final_price | floatFilter}}</del>
                                             </van-col>
                                             <van-col class="txt-right">
-                                                <span class="earnings" v-if="item.coupon_income">预估收益:￥{{item.coupon_income}}</span>
-                                                <span class="sales">月销：{{item.volume}}</span>
+                                                <div class="earnings" v-if="item.coupon_income">预估收益:￥{{item.coupon_income | floatFilter}}</div>
+                                                <div class="sales">月销：{{item.volume}}</div>
                                             </van-col>
                                         </van-row>
                                     </div>
@@ -335,26 +335,23 @@
                     }
 
                     .price {
-                        padding: 0 .12rem .18rem .12rem;
-
-                        span,
-                        del {
-                            display: inline-block;
-                            margin-bottom: .1rem;
-                            color: rgb(143, 154, 168)
-                        }
+                        padding: 0 .12rem .25rem .12rem;
+                        color: rgb(143, 154, 168);
 
                         .now {
                             display: block;
                             color: #fd333c;
                             font-size: .3rem;
+                            margin-bottom: .1rem;
                         }
 
                         .earnings {
-                            padding: 0 .1rem;
+                            margin-bottom: .1rem;
+                            padding: 0 0.05rem;
                             line-height: .4rem;
                             background-color: #ffece3;
                             color: rgb(255, 97, 27);
+                            word-break: break-all;
                         }
                     }
 

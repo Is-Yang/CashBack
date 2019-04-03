@@ -7,7 +7,7 @@
                     <van-swipe :autoplay="3000" indicator-color="white" v-if="productDetail.small_images.length > 0">
                         <van-swipe-item v-for="(image, index) in productDetail.small_images" :key="index">
                             <!-- <img :src="image" /> -->
-                            <div class="figure" :style="{backgroundImage:'url(' + image + ')'}" v-lazy:background-image="image"></div>
+                            <div class="figure" :style="{backgroundImage:'url(' + image + '_240x240' +')'}" v-lazy:background-image="image + '_240x240'"></div>
                         </van-swipe-item>
                     </van-swipe>
 
@@ -19,8 +19,8 @@
 
                 <van-row type="flex" justify="space-between" class="price-info">
                     <van-col>
-                        <span class="current">￥<em>{{productDetail.now_price}}</em></span>
-                        <del class="origin">￥{{productDetail['zk_final_price']}}</del>
+                        <span class="current">￥<em>{{productDetail.now_price | floatFilter}}</em></span>
+                        <del class="origin">￥{{productDetail['zk_final_price'] | floatFilter}}</del>
                     </van-col>
                     <van-col>
                         <span>￥{{coupon_income}}</span>
@@ -101,10 +101,10 @@
             // window.addEventListener('scroll', this.detailScroll, true);
         },
         created() {
+            this.init();
             setTimeout(() => {
                 this.handleResize();
             }, 100);
-            this.init();
         },
         destroyed: function () {
             // window.removeEventListener('scroll', this.detailScroll);   //  离开页面清除（移除）滚轮滚动事件
@@ -127,11 +127,11 @@
                     productImages.style.height = productImages.clientWidth + 'px';
                 }
                 // 产品详情图iframe
-                const oIframe = document.getElementById('show-iframe');
-                const deviceWidth = document.documentElement.clientWidth;
-                const deviceHeight = document.documentElement.clientHeight;
-                oIframe.style.width = deviceWidth + 'px';
-                oIframe.style.height = deviceHeight + 'px';
+                // const oIframe = document.getElementById('show-iframe');
+                // const deviceWidth = document.documentElement.clientWidth;
+                // const deviceHeight = document.documentElement.clientHeight;
+                // oIframe.style.width = deviceWidth + 'px';
+                // oIframe.style.height = deviceHeight + 'px';
             },
             init() {
                 if (this.$route.query) {

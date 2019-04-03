@@ -26,6 +26,13 @@ Object.keys(component).forEach(key => {
   Vue.component(`${name}`, component[key]);
 });
 
+// 过滤，保留小数点后两位
+Vue.filter('floatFilter', (value) => {
+  return Number(parseFloat(value).toFixed(0)) == Number(parseFloat(value).toFixed(1)) ? Number(parseFloat(value).toFixed(0)) : 
+        Number(parseFloat(value).toFixed(1)) == Number(parseFloat(value).toFixed(2)) ? Number(parseFloat(value).toFixed(1)) : 
+        Number(parseFloat(value).toFixed(2))
+})
+
 new Vue({
   router,
   render: h => h(App),

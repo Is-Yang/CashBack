@@ -171,8 +171,9 @@ img {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2; */
+    line-height: 1.45;
     font-size: 0.26rem;
-    height: 0.75rem;
+    height: 0.72rem;
 }
 
 .figure {

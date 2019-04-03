@@ -50,7 +50,7 @@
                 <van-cell v-for="(item, index) in list" :key="index">
                     <van-row type="flex" @click.native="link(item.num_iid)">
                         <van-col class="product-img">
-                            <div class="figure" :style="{backgroundImage:'url(' + item.pict_url + ')'}" v-lazy:background-image="item.pict_url"></div>
+                            <div class="figure" :style="{backgroundImage:'url(' + item.pict_url +'_240x240'+')'}" v-lazy:background-image="item.pict_url +'_240x240'"></div>
                             <!-- <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" /> -->
                             <!-- <div class="discounts" v-if="item.coupon_info">
                                 <span>{{item.coupon_info}}</span>
@@ -67,9 +67,9 @@
                                     <van-col>
                                         <!-- <span class="price" v-if="catId == ''">{{'￥' + (item.zk_final_price - (item.coupon_amount ? item.coupon_amount : 0))}}</span> -->
                                         <!-- <span class="price" v-if="catId != ''">{{'￥' + (item.zk_final_price - (item.coupon_money ? item.coupon_money : 0))}}</span> -->
-                                        <span class="price">￥{{item.now_price ? item.now_price : 0}}</span>
+                                        <span class="price">￥{{item.now_price ? item.now_price : 0 | floatFilter}}</span>
                                         <span>
-                                            {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：{{'￥' + item.zk_final_price}}
+                                            {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：￥{{item.zk_final_price | floatFilter}}
                                         </span>
                                     </van-col>
                                     <van-col>月销：{{item.volume}}</van-col>
@@ -157,11 +157,6 @@
                     label: '比率排序',
                     value: 3
                 }]
-            }
-        },
-        filters: {
-            rateFilter(value) {
-                return parseFloat(value * 100).toFixed(2) + '%';
             }
         },
         mounted() {
@@ -633,6 +628,7 @@
                 color: #ff611b;
                 padding: 2px 5px;
                 border-radius: 3px;
+                word-break: break-all;
             }
         } 
     }
