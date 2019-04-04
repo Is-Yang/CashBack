@@ -277,6 +277,12 @@
                         padding: .12rem .15rem;
                         text-align: center;
                     }
+
+                    img {
+                        display: block;
+                        margin: 0 auto;
+                        margin-bottom: .1rem;
+                    }
                 }
             }
 
@@ -340,17 +346,18 @@
 
                         .now {
                             display: block;
+                            padding: 2px 0;
                             color: #fd333c;
                             font-size: .3rem;
-                            margin-bottom: .1rem;
+                            margin-bottom: 0.05rem;
                         }
 
                         .earnings {
-                            margin-bottom: .1rem;
-                            padding: 0 0.05rem;
-                            line-height: .4rem;
+                            margin-bottom: 0.05rem;
                             background-color: #ffece3;
-                            color: rgb(255, 97, 27);
+                            color: #ff611b;
+                            padding: 2px 5px;
+                            border-radius: 3px;
                             word-break: break-all;
                         }
                     }

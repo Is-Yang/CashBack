@@ -4,8 +4,8 @@
         <div class="product-main">
             <div class="product-content">
                 <div class="product-images">
-                    <van-swipe :autoplay="3000" indicator-color="white" v-if="productDetail.small_images.length > 0">
-                        <van-swipe-item v-for="(image, index) in productDetail.small_images" :key="index">
+                    <van-swipe :autoplay="3000" indicator-color="white" v-if="small_images.length > 0">
+                        <van-swipe-item v-for="(image, index) in small_images" :key="index">
                             <!-- <img :src="image" /> -->
                             <div class="figure" :style="{backgroundImage:'url(' + image + '_240x240' +')'}" v-lazy:background-image="image + '_240x240'"></div>
                         </van-swipe-item>
@@ -19,7 +19,7 @@
 
                 <van-row type="flex" justify="space-between" class="price-info">
                     <van-col>
-                        <span class="current" v-if="productDetail.current_price">￥<em>{{productDetail.current_price | floatFilter}}</em></span>
+                        <span class="current" v-if="current_price">￥<em>{{current_price | floatFilter}}</em></span>
                         <del class="origin" v-if="productDetail['zk_final_price']">￥{{productDetail['zk_final_price'] | floatFilter}}</del>
                     </van-col>
                     <van-col v-if="coupon_income">
@@ -85,12 +85,11 @@
                 tkl: '',
                 clipboardObject: null,
                 buyText: '省钱购买',
-                coupon_money: 0,
                 coupon_income: '',
-                productDetail: {
-                    small_images: [],
-                    current_price: '',
-                },
+                coupon_money: 0,
+                current_price: '',
+                small_images: [],
+                productDetail: {},
                 activeName: 'detailsImg',
                 imgeText: [],
                 iframeUrl: ''
@@ -150,13 +149,14 @@
                             let result = res.data.results.n_tbk_item;
                             if (result) {
                                 this.productDetail = result;
-                                this.productDetail.small_images = result.small_images.string && result.small_images.string.length > 0 ? result.small_images.string : [result.pict_url];
+                                this.small_images = result.small_images.string && result.small_images.string.length > 0 ? result.small_images.string : [result.pict_url];
                             }
                             this.$eventHub.$emit('loading', false);
                         })
                     })
-                        this.getDetail();
+                    this.getDetail();
                     this.getCoupon();
+
                 }
             },
             getCoupon() {
@@ -172,9 +172,10 @@
                         let data = res.data;
                         if (data) {
                             if(data.coupon_money) {
-                                this.productDetail.current_price = Number(data.item_price) - data.coupon_money;
+                                this.current_price = Number(data.item_price) - data.coupon_money;
+                                this.coupon_money = data.coupon_money;
                             }else{
-                                this.productDetail.current_price = Number(data.item_price);
+                                this.current_price = Number(data.item_price);
                             }
                             this.coupon_income = data.coupon_income ? data.coupon_income:data.income;
                             this.tkl = data.tkl;
