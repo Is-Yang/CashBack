@@ -112,14 +112,12 @@
                                     </van-row>
                                     <div class="price">
                                         <van-row type="flex" justify="space-between">
-                                            <van-col class="txt-left">
-                                                <div class="now">￥{{(item.zk_final_price - (item.coupon_money ? item.coupon_money : 0 )) | floatFilter}}</div>
-                                                <del class="original">￥{{item.zk_final_price | floatFilter}}</del>
-                                            </van-col>
-                                            <van-col class="txt-right">
-                                                <div class="earnings" v-if="item.coupon_income">预估收益:￥{{item.coupon_income | floatFilter}}</div>
-                                                <div class="sales">月销：{{item.volume}}</div>
-                                            </van-col>
+                                            <div class="now">￥{{(item.zk_final_price - (item.coupon_money ? item.coupon_money : 0 )) | floatFilter}}</div>
+                                            <div class="earnings" v-if="item.coupon_income">预估收益:￥{{item.coupon_income | floatFilter}}</div>
+                                        </van-row>
+                                        <van-row type="flex" justify="space-between">
+                                            <del class="original">￥{{item.zk_final_price | floatFilter}}</del>
+                                            <span class="sales">月销：{{item.volume}}</span>
                                         </van-row>
                                     </div>
                                 </div>
@@ -274,14 +272,15 @@
 
                     a {
                         display: block;
-                        padding: .12rem .15rem;
+                        padding: 0.05rem .15rem;
                         text-align: center;
                     }
 
                     img {
                         display: block;
                         margin: 0 auto;
-                        margin-bottom: .1rem;
+                        padding: .12rem .15rem;
+                        box-sizing: border-box;
                     }
                 }
             }
@@ -341,19 +340,25 @@
                     }
 
                     .price {
-                        padding: 0 .12rem .25rem .12rem;
+                        padding: 0 .12rem .2rem .12rem;
                         color: rgb(143, 154, 168);
+
+                        /deep/ .van-row--flex {
+                            align-items: center;
+                            margin-bottom: .1rem;
+                        }
+
+                        del {
+                            padding-left: 0.03rem;
+                        }
 
                         .now {
                             display: block;
-                            padding: 2px 0;
                             color: #fd333c;
                             font-size: .3rem;
-                            margin-bottom: 0.05rem;
                         }
 
                         .earnings {
-                            margin-bottom: 0.05rem;
                             background-color: #ffece3;
                             color: #ff611b;
                             padding: 2px 5px;
