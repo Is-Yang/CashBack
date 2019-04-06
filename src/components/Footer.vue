@@ -3,7 +3,7 @@
         <van-tabbar-item icon="wap-home" :to="{ path: '/index'}">首页</van-tabbar-item>
         <van-tabbar-item icon="underway-o" :to="{ path: '/sale'}">限时抢</van-tabbar-item>
         <van-tabbar-item icon="search" :to="{ path: '/list', query: { user_id: user_id }}">搜索</van-tabbar-item>
-        <van-tabbar-item icon="contact" url="https://user_center.dxanm.com">我的</van-tabbar-item>
+        <van-tabbar-item icon="contact" url="https://usercenter.api.dxanm.com/wechat/auth?url=https%3a%2f%2fusercenter.dxanm.com%2f">我的</van-tabbar-item>
     </van-tabbar>
 </template>
 

@@ -181,6 +181,8 @@
                 // 搜索时
                 if (from.path != '/detail' && (route.query && route.query.keyword || 
                     (route.path == '/category' || route.path == '/list'))) {
+                        this.init();
+                        this.list = [];
                         this.$eventHub.$emit('loading', true);
                         window.location.reload();
                 }
