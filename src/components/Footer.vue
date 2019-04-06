@@ -12,7 +12,7 @@ export default {
     data() {
         return {
             current: 0,
-            user_id: 18,
+            user_id: '',
         }
     },
     watch:{
@@ -28,6 +28,7 @@ export default {
             if (this.$route) {
                 this.current = this.$route.path == '/index' ? 0 : this.$route.path == '/sale' ? 1 : 
                                (this.$route.path == '/list' || this.$route.path == '/category') ? 2 : 3
+                this.user_id = this.$route.query.user_id;
             }
         }
     }

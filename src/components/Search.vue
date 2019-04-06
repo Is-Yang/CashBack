@@ -65,7 +65,6 @@
                 hotList: [], // 热词数据
                 resultList: [], // 搜索结果
                 historyList: [], // 搜索历史
-                user_id: 18,
                 filter: {
                     keyword: '' // 关键词
                 }
@@ -154,7 +153,7 @@
                 this.$router.push({
                     path: 'list',
                     query: {
-                        user_id: this.user_id,
+                        user_id: this.$router.user_id,
                         keyword: keyword
                     }
                 })

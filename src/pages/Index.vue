@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="img">
                                         <!-- <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" /> -->
-                                        <div class="figure" :style="{backgroundImage:'url(' + item.pict_url + '_240x240' + ')'}" v-lazy:background-image="item.pict_url + '_240x240'"></div>
+                                        <div class="figure" v-lazy:background-image="item.pict_url + '_240x240'"></div>
                                     </div>
                                     <van-row type="flex" class="product-tit">
                                         <van-col class="icon-coupon taobao icon-coupon-list" v-if="item.user_type == 0"></van-col>
@@ -143,7 +143,7 @@
                 finishedText: '暂无数据',
                 isSearch: false,
                 page_num: 1,
-                user_id: 18
+                user_id: ''
             }
         },
         mounted() {

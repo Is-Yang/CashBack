@@ -13,7 +13,11 @@ import component from './components/index'
 import host from './host'
 
 Vue.use(Vant);
-Vue.use(Lazyload);
+Vue.use(Lazyload, {
+  attempt: 1,
+  lazyComponent: true,
+  listenEvents: [ 'scroll' ]
+});
 Vue.use(Toast);
 Vue.prototype.$host = host;
 Vue.prototype.$eventHub = Vue.prototype.$eventHub || new Vue()

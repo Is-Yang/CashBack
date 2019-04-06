@@ -50,7 +50,7 @@
                 <van-cell v-for="(item, index) in list" :key="index">
                     <van-row type="flex" @click.native="link(item.num_iid)">
                         <van-col class="product-img">
-                            <div class="figure" :style="{backgroundImage:'url(' + item.pict_url +'_240x240'+')'}" v-lazy:background-image="item.pict_url +'_240x240'"></div>
+                            <div class="figure" v-lazy:background-image="item.pict_url +'_240x240'"></div>
                             <!-- <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" /> -->
                             <!-- <div class="discounts" v-if="item.coupon_info">
                                 <span>{{item.coupon_info}}</span>
@@ -154,7 +154,7 @@
                     label: '价格排序',
                     value: 2
                 }, {
-                    label: '比率排序',
+                    label: '预估收益',
                     value: 3
                 }]
             }
@@ -181,12 +181,14 @@
                 // 搜索时
                 if (from.path != '/detail' && (route.query && route.query.keyword || 
                     (route.path == '/category' || route.path == '/list'))) {
-                    window.location.reload();
+                        this.$eventHub.$emit('loading', true);
+                        window.location.reload();
                 }
 
                 if (from.path == '/index' && (to.path == '/list' || to.path == '/category')) {
                     let isRefresh = sessionStorage.getItem('isRefresh');
                     if (isRefresh == '0') {
+                        this.$eventHub.$emit('loading', true);
                         sessionStorage.setItem('isRefresh', null);
                         window.location.reload();
                     } else {
@@ -276,6 +278,7 @@
                     page_size: 20,
                     is_tmall: this.paramsScreen.is_tmall || false,
                     has_coupon: this.paramsScreen.checked || false,
+                    is_overseas: this.paramsScreen.is_overseas || false,
                     sort_type: this.paramsScreen.sort_type || 0
                 }
 
@@ -320,7 +323,6 @@
 
                     forParams.page_no = this.flag ? 1 : this.paramsScreen.page_no;
                     forParams.q = this.paramsScreen.q;
-                    forParams.is_overseas = this.paramsScreen.is_overseas || false;
 
                     $.ajax(this.$host.http_api + '/shop/index', {
                         data: forParams,

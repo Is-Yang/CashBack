@@ -18,7 +18,7 @@
                         <van-cell v-for="(item, index) in list" :key="index">
                             <van-row type="flex" @click.native="link(item.num_iid)">
                                 <van-col class="product-img">
-                                    <div class="figure" :style="{backgroundImage:'url(' + item.pict_url +'_240x240'+')'}" v-lazy:background-image="item.pict_url +'_240x240'"></div>
+                                    <div class="figure" v-lazy:background-image="item.pict_url +'_240x240'"></div>
                                 </van-col>
                                 <van-col offset="1" class="product-content">
                                     <div class="product-info">

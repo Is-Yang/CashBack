@@ -7,7 +7,7 @@
                     <van-swipe :autoplay="3000" indicator-color="white" v-if="small_images.length > 0">
                         <van-swipe-item v-for="(image, index) in small_images" :key="index">
                             <!-- <img :src="image" /> -->
-                            <div class="figure" :style="{backgroundImage:'url(' + image + '_240x240' +')'}" v-lazy:background-image="image + '_240x240'"></div>
+                            <div class="figure" v-lazy:background-image="image + '_240x240'"></div>
                         </van-swipe-item>
                     </van-swipe>
 
@@ -167,6 +167,7 @@
                     success: ((res) => {
                         if (res.err) {
                             this.$toast(res.err.msg);
+                            this.$eventHub.$emit('loading', false);
                             return;
                         }
                         let data = res.data;
