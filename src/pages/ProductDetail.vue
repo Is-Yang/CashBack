@@ -6,8 +6,8 @@
                 <div class="product-images">
                     <van-swipe :autoplay="3000" indicator-color="white" v-if="small_images.length > 0">
                         <van-swipe-item v-for="(image, index) in small_images" :key="index">
-                            <!-- <img :src="image" /> -->
-                            <div class="figure" v-lazy:background-image="image + '_240x240'"></div>
+                            <!-- <img v-lazy:="image" /> -->
+                            <div class="figure" v-lazy:background-image="image"></div>
                         </van-swipe-item>
                     </van-swipe>
 
@@ -51,10 +51,9 @@
             <!-- 图文详情 -->
             <van-collapse v-model="activeName" accordion v-if="imgeText && imgeText.length > 0">
                 <van-collapse-item title="宝贝详情" name="detailsImg">
-                    <div>
-                        <img v-for="(img, index) in imgeText" :key="index"
-                            :src="img" v-lazy="img" />
-                    </div>
+                    <lazy-component>
+                        <img v-for="(img, index) in imgeText" :key="index" v-lazy="img" />
+                    </lazy-component>
                     <!-- <div v-if="imgeText && imgeText.length == 0">
                         <iframe id="show-iframe" frameborder="0" scrolling="auto" :src="iframeUrl"></iframe>
                     </div> -->

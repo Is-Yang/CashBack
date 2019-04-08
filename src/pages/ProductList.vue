@@ -99,9 +99,9 @@
                     </van-row>
                 </van-cell>
             </van-list>
-
-            <Footer></Footer>
         </div>
+        <Footer v-if="!isSearch"></Footer>
+        
         <Search v-if="isSearch" />
     </div>
 </template>
@@ -181,8 +181,8 @@
                 // 搜索时
                 if (from.path != '/detail' && (route.query && route.query.keyword || 
                     (route.path == '/category' || route.path == '/list'))) {
-                        this.init();
-                        this.list = [];
+                        // this.init();
+                        // this.list = [];
                         this.$eventHub.$emit('loading', true);
                         window.location.reload();
                 }

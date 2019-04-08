@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router/index';
 import Vant from 'vant';
 import 'vant/lib/index.css';
+import 'vant/lib/icon/local.css';
 import './assets/css/common.css';
 import {
   Lazyload,
@@ -14,9 +15,7 @@ import host from './host'
 
 Vue.use(Vant);
 Vue.use(Lazyload, {
-  attempt: 1,
   lazyComponent: true,
-  listenEvents: [ 'scroll' ]
 });
 Vue.use(Toast);
 Vue.prototype.$host = host;
