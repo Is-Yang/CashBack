@@ -98,8 +98,8 @@
                             <van-col span="12" v-for="item in list" :key="item.id" @click.native="link(item.num_iid)">
                                 <div class="product">
                                     <div class="coupon-price">
-                                        <!-- <span class="icon-coupon" v-if="item.coupon_money && item.coupon_money != 0">￥{{item.coupon_money}}</span> -->
-                                         <span class="icon-coupon">￥{{item.now_price ? item.now_price : 0}}</span>
+                                        <span class="icon-coupon" v-if="item.coupon_money && item.coupon_money != 0">￥{{item.coupon_money}}</span>
+                                         <!-- <span class="icon-coupon">￥{{item.now_price ? item.now_price : 0}}</span> -->
                                     </div>
                                     <div class="img">
                                         <!-- <img :src="item.pict_url+'_240x240'" v-lazy="item.pict_url+'_240x240'" /> -->
@@ -112,7 +112,7 @@
                                     </van-row>
                                     <div class="price">
                                         <van-row type="flex" justify="space-between">
-                                            <div class="now">￥{{(item.zk_final_price - (item.coupon_money ? item.coupon_money : 0 )) | floatFilter}}</div>
+                                            <div class="now">￥{{item.now_price | floatFilter}}</div>
                                             <div class="earnings" v-if="item.coupon_income">预估收益:￥{{item.coupon_income | floatFilter}}</div>
                                         </van-row>
                                         <van-row type="flex" justify="space-between">
