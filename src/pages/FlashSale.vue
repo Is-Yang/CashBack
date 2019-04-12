@@ -158,8 +158,8 @@ export default {
             list: [],
             filter: {
                 page_num: 1,
-                start_time: new Date(),
-                end_time: new Date()
+                start_time: '',
+                end_time: ''
             },
             currentDate: new Date()
         }
@@ -168,7 +168,6 @@ export default {
     },
     created () {
         this.init();
-        
     },
     methods: {
         init(){
@@ -223,6 +222,7 @@ export default {
             let tabItemW = document.getElementsByClassName("van-tab")[0];
             // 如果索引大于3，则-2定位在中间
             tabNav.scrollLeft = tabItemW.clientWidth * (index - (index > 3 ? 2 : 0));
+            this.getSale(index);
         },
         toSrollTop(){
             document.documentElement.scrollTop = document.body.scrollTop = 0;
@@ -233,7 +233,6 @@ export default {
                 this.$router.push({ 
                     path: 'detail', 
                     query: { 
-                        user_id: this.$route.query.user_id,
                         item_id: id,
                     }
                 })
@@ -265,7 +264,11 @@ export default {
             }
             this.onLoad(this.filter);
         },
-        onLoad() {
+        onLoad( params = {}) {
+            Object.assign(this.filter, params);
+            if (this.filter.start_time == '' || this.filter.end_time == '') {
+                return;
+            }
             /*
                 查询条件
                 page_num：翻页，可补充，默认是1

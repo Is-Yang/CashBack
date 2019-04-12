@@ -8,7 +8,7 @@
 
                 <van-swipe :autoplay="3000" indicator-color="white">
                     <van-swipe-item>
-                        <router-link :to="{ path: '/list', query: { keyword: '三只松鼠', user_id: user_id }}">
+                        <router-link :to="{ path: '/list', query: { keyword: '三只松鼠' }}">
                             <img src="../assets/img/brand01.jpg" />
                         </router-link>
                     </van-swipe-item>
@@ -19,31 +19,31 @@
             <div class="main-category">
                 <van-row type="flex" justify="center">
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 1, cat_name: '女装', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 1, cat_name: '女装' }}">
                             <img src="../assets/img/woman.png" />
                             女装
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 2, cat_name: '男装', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 2, cat_name: '男装' }}">
                             <img src="../assets/img/man.png" />
                             男装
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 3, cat_name: '数码', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 3, cat_name: '数码' }}">
                             <img src="../assets/img/shuma.png" />
                             数码
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 4, cat_name: '母婴', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 4, cat_name: '母婴' }}">
                             <img src="../assets/img/muying.png" />
                             母婴
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 5, cat_name: '食品', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 5, cat_name: '食品' }}">
                             <img src="../assets/img/food.png" />
                             食品
                         </router-link>
@@ -51,31 +51,31 @@
                 </van-row>
                 <van-row type="flex" justify="center">
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 6, cat_name: '内衣', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 6, cat_name: '内衣' }}">
                             <img src="../assets/img/nieyi.png" />
                             内衣
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 7, cat_name: '居家', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 7, cat_name: '居家' }}">
                             <img src="../assets/img/jiaju.png" />
                             居家
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 8, cat_name: '美妆', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 8, cat_name: '美妆' }}">
                             <img src="../assets/img/meizhuang.png" />
                             美妆
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 9, cat_name: '鞋包', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 9, cat_name: '鞋包' }}">
                             <img src="../assets/img/xiebao.png" />
                             鞋包
                         </router-link>
                     </van-col>
                     <van-col>
-                        <router-link :to="{ path: '/category', query: { cat_id: 10, cat_name: '运动', user_id: user_id }}">
+                        <router-link :to="{ path: '/category', query: { cat_id: 10, cat_name: '运动' }}">
                             <img src="../assets/img/sport.png" />
                             运动
                         </router-link>
@@ -97,8 +97,8 @@
                         <van-row type="flex" justify="space-between">
                             <van-col span="12" v-for="item in list" :key="item.id" @click.native="link(item.num_iid)">
                                 <div class="product">
-                                    <div class="coupon-price">
-                                        <span class="icon-coupon" v-if="item.coupon_money && item.coupon_money != 0">￥{{item.coupon_money}}</span>
+                                    <div class="coupon-price" v-if="item.coupon_money && item.coupon_money != 0">
+                                        <span class="icon-coupon">￥{{item.coupon_money}}</span>
                                          <!-- <span class="icon-coupon">￥{{item.now_price ? item.now_price : 0}}</span> -->
                                     </div>
                                     <div class="img">
@@ -152,6 +152,7 @@
         created() {
             // 用户Id
             this.user_id = this.$route.query.user_id ? this.$route.query.user_id : this.user_id;
+            localStorage.setItem("userInfo", JSON.stringify({userId: this.user_id}));
 
             this.$eventHub.$on('cancel', (data)=> {
                 this.isSearch = false;
@@ -176,7 +177,6 @@
                 this.$router.push({ 
                     path: 'detail', 
                     query: { 
-                        user_id: this.user_id,
                         item_id: id,
                     }
                 })

@@ -153,7 +153,6 @@
                 this.$router.push({
                     path: 'list',
                     query: {
-                        user_id: this.$router.user_id,
                         keyword: keyword
                     }
                 })

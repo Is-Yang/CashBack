@@ -249,7 +249,6 @@
                     this.$router.push({ 
                         path: 'detail', 
                         query: { 
-                            user_id: this.$route.query.user_id,
                             item_id: id,
                         }
                     })

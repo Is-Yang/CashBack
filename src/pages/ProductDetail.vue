@@ -51,9 +51,10 @@
             <!-- 图文详情 -->
             <van-collapse v-model="activeName" accordion v-if="imgeText && imgeText.length > 0">
                 <van-collapse-item title="宝贝详情" name="detailsImg">
-                    <lazy-component>
-                        <img v-for="(img, index) in imgeText" :key="index" v-lazy="img" />
-                    </lazy-component>
+                    <div v-for="(img, index) in imgeText" :key="index">
+                        <img v-lazy="img" />
+                    </div>
+
                     <!-- <div v-if="imgeText && imgeText.length == 0">
                         <iframe id="show-iframe" frameborder="0" scrolling="auto" :src="iframeUrl"></iframe>
                     </div> -->
@@ -132,9 +133,11 @@
                 // oIframe.style.height = deviceHeight + 'px';
             },
             init() {
+                if (localStorage.getItem('userInfo')) {
+                    this.userId = JSON.parse(localStorage.getItem('userInfo')).userId;
+                }
                 if (this.$route.query) {
                     this.$eventHub.$emit('loading', true);
-                    this.userId = this.$route.query.user_id;
                     this.itemId = this.$route.query.item_id;
 
                     let data = [];
