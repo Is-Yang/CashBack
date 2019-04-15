@@ -50,7 +50,7 @@
 
             <!-- 图文详情 -->
             <van-collapse v-model="activeName" accordion v-if="imgeText && imgeText.length > 0">
-                <van-collapse-item title="宝贝详情" name="detailsImg">
+                <van-collapse-item title="宝贝详情" name="detailsImg" class="detailsImg">
                     <div v-for="(img, index) in imgeText" :key="index">
                         <img v-lazy="img" />
                     </div>
@@ -228,7 +228,7 @@
 
 <style lang="less">
     #productDetail {
-        height: 100%;
+        // height: 100%;
         .product-content {
             background-color: #fff;
             margin-bottom: .2rem;
@@ -238,6 +238,10 @@
             overflow: auto;
             padding-top: 46px;
             padding-bottom: 50px;
+
+            .detailsImg  {
+                min-height: 300px;
+            }
         }
 
         .price-info {

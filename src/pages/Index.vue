@@ -3,7 +3,8 @@
         <div class="main-wrapper" v-if="!isSearch">
             <div class="main-head">
                 <div class="search-wrap">
-                    <van-search slot="title" placeholder="粘贴淘宝宝贝标题，先领券再购物" @focus="onFocus"></van-search>
+                    <van-search slot="title" placeholder="粘贴淘宝宝贝标题，先领券再购物" @focus="onFocus"
+                        :class="posFixed ? 'fixed-bg' : ''"></van-search>
                 </div>
 
                 <van-swipe :autoplay="3000" indicator-color="white">
@@ -142,12 +143,14 @@
                 finished: false,
                 finishedText: '暂无数据',
                 isSearch: false,
+                posFixed: false,
                 page_num: 1,
                 user_id: ''
             }
         },
         mounted() {
             // window.addEventListener('resize', this.handleResize, true);
+            window.addEventListener('scroll', this.handleScroll, true);
         },
         created() {
             // 用户Id
@@ -165,6 +168,10 @@
         methods: {
             onFocus() {
                 this.isSearch = true;
+            },
+            handleScroll() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+                this.posFixed = scrollTop >= 100 ? true : false;
             },
             handleResize() {
                 let mainHead = document.getElementsByClassName("main-head")[0];
@@ -232,12 +239,19 @@
                     z-index: 99;
 
                     .van-search {
+                        padding-bottom: 10px;
                         .val-cell {
                             border-radius: 25px;
                         }
-
+                        position: fixed;
+                        left: 0;
+                        right: 0;
+                        top: 0;
+                        z-index: 9;
                         background: initial !important;
-
+                        &.fixed-bg {
+                            background-image: -webkit-linear-gradient(0deg, #ff7421, #ff485f) !important;
+                        }
                     }
                 }
 

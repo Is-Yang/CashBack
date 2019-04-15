@@ -498,6 +498,7 @@ export default {
             color: #fff;
             border-radius: 25px;
             font-size: .24rem;
+            overflow: hidden;
         }
 
         .sale-progress .progress-tip {

@@ -238,8 +238,10 @@
             handleResize() {
                 let headWrap = document.getElementsByClassName("head-wrap")[0];
                 let listWrap = document.getElementsByClassName("list-wrap")[0];
+                let height = document.documentElement.clientHeight;
                 if (headWrap) {
                     listWrap.style.marginTop = headWrap.clientHeight + 'px';
+                    listWrap.style.minHeight = height - headWrap.clientHeight - 50 + 'px';
                 } else {
                     this.handleResize();
                 }
