@@ -240,7 +240,11 @@
             padding-bottom: 50px;
 
             .detailsImg  {
-                min-height: 300px;
+                line-height: normal;
+
+                img {
+                    display: block;
+                }
             }
         }
 

@@ -16,6 +16,8 @@ import host from './host'
 Vue.use(Vant);
 Vue.use(Lazyload, {
   lazyComponent: true,
+  loading: require('./assets/img/loading.jpg'),
+  try: 1
 });
 Vue.use(Toast);
 Vue.prototype.$host = host;

@@ -36,8 +36,8 @@
                                             </van-col>
                                             <van-col>月销：{{item.volume}}</van-col>
                                         </van-row>
-                                        <div class="sale-progress" v-if="item.total_amount && item.sold_num">
-                                            <div class="progress-tip" :style="{width:(item.total_amount/(item.total_amount/item.sold_num) + '%')}"></div>
+                                        <div class="sale-progress" v-if="item.total_amount">
+                                            <div class="progress-tip" :style="{width:(item.sold_num/item.total_amount + '%')}"></div>
                                             已抢：{{item.sold_num}}
                                         </div>
                                     </div>
@@ -267,6 +267,7 @@ export default {
         onLoad( params = {}) {
             Object.assign(this.filter, params);
             if (this.filter.start_time == '' || this.filter.end_time == '') {
+                this.init();
                 return;
             }
             /*
