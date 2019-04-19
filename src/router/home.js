@@ -31,6 +31,6 @@ export default [{
     path: '/sale',  // 限时抢购
     component: FlashSale,
     meta: {
-        keepAlive: false
+        keepAlive: true
     }
 }]

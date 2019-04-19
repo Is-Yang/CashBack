@@ -31,7 +31,7 @@
                                             <van-col>
                                                 <span class="price">￥{{item.now_price ? item.now_price : 0 | floatFilter}}</span>
                                                 <span>
-                                                    {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：￥{{item.zk_final_price | floatFilter}}
+                                                    {{item.user_type == 1 ? '天猫价' : '淘宝价'}}：￥{{item.reserve_price | floatFilter}}
                                                 </span>
                                             </van-col>
                                             <van-col>月销：{{item.volume}}</van-col>
@@ -169,6 +169,21 @@ export default {
     created () {
         this.init();
     },
+    beforeRouteLeave (to, from, next) {
+        if (to.path == '/detail') {
+            if (!from.meta.keepAlive) {
+                from.meta.keepAlive = true;
+            }
+            next();
+        } else if (to.path == '/index') {
+            to.meta.keepAlive = false;
+            next();
+        } else {
+            from.meta.keepAlive = false;
+            to.meta.keepAlive = false;
+            next();
+        }
+    },
     methods: {
         init(){
             let currentDate = this.currentDate;
@@ -239,7 +254,6 @@ export default {
             }
         },
         getSale(index) {
-            this.flag = true;
             this.$eventHub.$emit('loading', true);
             let start =  this.timeNodes[index];
             let end = this.timeNodes[index + 1] ? this.timeNodes[index + 1] : this.timeNodes[index];
@@ -262,6 +276,7 @@ export default {
             } else {
                 this.filter.end_time = moment(day.toString() + " " + end.time.toString()).format('YYYY-MM-DD HH:00');
             }
+            this.flag = true;
             this.onLoad(this.filter);
         },
         onLoad( params = {}) {
@@ -277,10 +292,6 @@ export default {
                 start_time: 开团时间开始(注：开始和结束时间，都仅针对start_time限定)
                 end_time: 开团时间结束(注：开始和结束时间，都仅针对start_time限定)
             */
-
-            if (this.flag) {
-                this.toSrollTop();
-            }
 
             let startTime = moment(this.filter.start_time).format("YYYY-MM-DD HH:00");
             let endTime = moment(this.filter.end_time).format("YYYY-MM-DD HH:00");
@@ -305,6 +316,7 @@ export default {
                                 this.list = data.list;
                                 this.filter.page_num = 2;
                                 this.flag = false;
+                                 this.toSrollTop();
                             }
 
                             // 加载状态结束
@@ -432,6 +444,10 @@ export default {
                     color: #fd333c;
                     font-size: .3rem;
                     margin-right: .1rem;
+                }
+
+                span {
+                    display: inline-block;
                 }
             }
 
