@@ -316,7 +316,7 @@ export default {
                                 this.list = data.list;
                                 this.filter.page_num = 2;
                                 this.flag = false;
-                                 this.toSrollTop();
+                                this.toSrollTop();
                             }
 
                             // 加载状态结束

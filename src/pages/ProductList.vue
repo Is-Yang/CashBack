@@ -272,10 +272,6 @@
                     is_tmall：true天猫
                     has_coupon：有优惠
                 */
-                if (this.flag) {
-                    this.toSrollTop();
-                }
-
                 // 共同参数
                 const forParams = {
                     page_size: 20,
@@ -302,6 +298,7 @@
                                     this.list = res.data.list;
                                     this.paramsScreen.page_no = 2;
                                     this.flag = false;
+                                    this.toSrollTop();
                                 }
 
                                 // 加载状态结束
